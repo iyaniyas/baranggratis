@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ url('/') }}">BarangGratis.com</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a href="{{ route('beranda') }}" class="nav-link{{ request()->is('/') ? ' active' : '' }}">Beranda</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+

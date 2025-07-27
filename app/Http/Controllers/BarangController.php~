@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\Lokasi;
+
+class BarangController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Barang::with(['kategori', 'lokasi']);
+
+        if ($request->filled('q')) {
+            $query->where('judul', 'like', '%' . $request->q . '%');
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategori_id', $request->kategori);
+        }
+
+        if ($request->filled('lokasi')) {
+            $query->where('lokasi_id', $request->lokasi);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('diambil', $request->status === 'diambil');
+        }
+
+        $barangList = $query->latest()->paginate(9);
+
+        return view('beranda', [
+            'barangList' => $barangList,
+            'kategoriList' => Kategori::all(),
+            'lokasiList' => Lokasi::all(),
+        ]);
+    }
+
+    // Tampilkan form tambah barang
+    public function create()
+    {
+        $kategoris = Kategori::all();
+        // ... (belum ada implementasi)
+    }
+}
+
