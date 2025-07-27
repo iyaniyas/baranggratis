@@ -1,31 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'BarangGratis.com')</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('meta_title', 'BarangGratis.com - Platform Barang Bekas & Gratis Seluruh Indonesia')</title>
+    <meta name="description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis, tanpa bayar!')">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+
     <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #181a1b; color: #fff; }
-        .navbar, .card { background: #222; }
-        .form-control, .form-select { background: #242526; color: #fff; border-color: #444; }
-        .form-control:focus, .form-select:focus { background: #2c2c2c; color: #fff; border-color: #007bff; }
-        .btn-primary, .btn-success { border-radius: 0.5rem; }
+        body {
+            background-color: #191b1f;
+            color: #f1f1f1;
+        }
+        .navbar, .card, .dropdown-menu {
+            background-color: #23262b !important;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+        a, a:visited, .text-primary {
+            color: #5cb3ff !important;
+        }
+        .form-label, .form-control, .form-select, input, textarea, select {
+            background-color: #23262b !important;
+            color: #f1f1f1 !important;
+            border-color: #3a3b3c;
+        }
+        .btn-primary {
+            background-color: #5cb3ff;
+            border-color: #4ca1e8;
+            color: #191b1f;
+        }
+        .btn-primary:hover {
+            background-color: #388fd6;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
     </style>
+    @stack('head')
 </head>
 <body>
     @include('layouts.navigation')
 
-    <main>
+    <div class="container mb-5">
         @yield('content')
-    </main>
-
-    <footer class="text-center py-4 text-secondary small" style="opacity:.7">
-        &copy; 2025 BarangGratis.com
+    </div>
+    <footer class="text-center text-muted pb-2 pt-3" style="font-size:0.95em;">
+        &copy; {{ date('Y') }} baranggratis.com. Free stuff for everyone!
     </footer>
-    <!-- Bootstrap JS Bundle CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>
 

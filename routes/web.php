@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\SitemapController;
+use Illuminate\Support\Facades\Route;
 
+// Beranda dengan filter, search, dan paginasi
 Route::get('/', function (Request $request) {
     $query = \App\Models\Barang::with(['kategori', 'lokasi']);
 
@@ -30,15 +33,32 @@ Route::get('/', function (Request $request) {
     ]);
 })->name('beranda');
 
+// Barang - pakai slug
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
 Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
-Route::get('/barang/{id}', [BarangController::class, 'show'])->name('barang.show');
-Route::get('/barang/{id}/edit', [BarangController::class, 'edit'])->name('barang.edit');
-Route::post('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
-Route::post('/barang/{id}/status', [BarangController::class, 'updateStatus'])->name('barang.updateStatus');
-Route::post('/barang/{id}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
 
+// Detail, edit, update, status, delete pakai {slug}
+Route::get('/barang/{slug}', [BarangController::class, 'show'])->name('barang.show');
+Route::get('/barang/{slug}/edit', [BarangController::class, 'edit'])->name('barang.edit');
+Route::post('/barang/{slug}', [BarangController::class, 'update'])->name('barang.update');
+Route::post('/barang/{slug}/status', [BarangController::class, 'updateStatus'])->name('barang.updateStatus');
+Route::post('/barang/{slug}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
+
+// Update status by token (khusus)
+Route::get('/barang/update-status/{token}', [BarangController::class, 'updateStatusByToken'])->name('barang.updateStatusByToken');
+
+// Dashboard (static)
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
+
+// Robots.txt dinamis
+Route::get('/robots.txt', function () {
+    return response()->view('robots')
+        ->header('Content-Type', 'text/plain');
+});
+
+// Sitemap.xml dinamis
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+

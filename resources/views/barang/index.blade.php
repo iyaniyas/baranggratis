@@ -1,78 +1,52 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-light">Daftar Barang Gratis</h2>
-        <a href="{{ route('barang.create') }}" class="btn btn-primary">+ Tambah Barang</a>
-    </div>
+<div class="container py-4 bg-dark text-light min-vh-100">
+    <h2 class="mb-4 text-light">Daftar Barang</h2>
 
-    {{-- Optional: search & filter, copy dari homepage --}}
-    <form method="GET" action="{{ url('/barang') }}" class="row g-2 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari barang...">
-        </div>
-        <div class="col-md-3">
-            <select name="kategori_id" class="form-select">
-                <option value="">Semua Kategori</option>
-                @foreach ($kategoris ?? [] as $kategori)
-                    <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                        {{ $kategori->nama }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="lokasi_id" class="form-select">
-                <option value="">Semua Lokasi</option>
-                @foreach ($lokasis ?? [] as $lokasi)
-                    <option value="{{ $lokasi->id }}" {{ request('lokasi_id') == $lokasi->id ? 'selected' : '' }}>
-                        {{ $lokasi->nama }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-success w-100">🔍 Cari</button>
-        </div>
-    </form>
+    @if(session('success'))
+        <div class="alert alert-success text-dark">{{ session('success') }}</div>
+    @endif
 
-    @if ($barangs->count())
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @foreach ($barangs as $barang)
-                <div class="col">
-                    <div class="card h-100 bg-dark text-light shadow">
+    @if($barangs->count())
+        <div class="row">
+            @foreach($barangs as $barang)
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 bg-dark text-light border-secondary">
+                        @if($barang->gambar)
+                            <img src="{{ asset('storage/' . $barang->gambar) }}" class="card-img-top" style="object-fit:cover; max-height:200px;" alt="Gambar {{ $barang->judul }}">
+                        @endif
                         <div class="card-body">
-                            <h5 class="card-title">{{ $barang->judul }}</h5>
-                            <p class="mb-1">📁 Kategori: {{ $barang->kategori->nama ?? '-' }}</p>
-                            <p class="mb-1">📍 Lokasi: {{ $barang->lokasi->nama ?? '-' }}</p>
-                            <p class="{{ $barang->diambil ? 'text-danger' : 'text-success' }}">
-                                Status: {{ $barang->diambil ? 'Sudah Diambil' : 'Tersedia' }}
-                            </p>
-                            <div class="mb-2">
-                                {{ \Illuminate\Support\Str::limit($barang->deskripsi, 80) }}
+                            <h5 class="card-title mb-2 text-light">
+                                <a href="{{ url('/barang/' . $barang->slug) }}" class="text-light text-decoration-underline">
+                                    {{ $barang->judul }}
+                                </a>
+                            </h5>
+                            <div class="mb-1 small text-light">
+                                Kategori: {{ optional($barang->kategori)->nama ?? '-' }} |
+                                Lokasi: {{ optional($barang->lokasi)->nama ?? '-' }}
                             </div>
+                            <p class="card-text text-light">
+                                {{ \Illuminate\Support\Str::limit($barang->deskripsi, 100) }}
+                            </p>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-secondary">
-                            <a href="{{ route('barang.show', $barang->id) }}" class="btn btn-sm btn-light">Detail</a>
-                            @if (auth()->check() && $barang->user_id === auth()->id())
-                                <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus barang ini?')">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
-                            @endif
+                        <div class="card-footer d-flex justify-content-between align-items-center bg-dark border-secondary">
+                            <a href="{{ url('/barang/' . $barang->slug . '/edit') }}" class="btn btn-outline-warning btn-sm">Edit</a>
+                            <form action="{{ url('/barang/' . $barang->slug . '/delete') }}" method="POST" onsubmit="return confirm('Yakin hapus barang ini?')">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+                            </form>
+                            <a href="{{ url('/barang/' . $barang->slug) }}" class="btn btn-outline-info btn-sm">Detail</a>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-
-        <div class="mt-4">
-            {{ $barangs->withQueryString()->links() }}
+        <div>
+            {{ $barangs->links('pagination::bootstrap-5') }}
         </div>
     @else
-        <div class="alert alert-warning text-center">Belum ada barang yang tersedia.</div>
+        <div class="alert alert-light text-dark">Belum ada barang tersedia.</div>
     @endif
 </div>
 @endsection

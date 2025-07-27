@@ -19,7 +19,8 @@ return new class extends Migration
 	    $table->string('gambar')->nullable();
             $table->enum('status', ['tersedia', 'sudah diambil'])->default('tersedia');
             $table->unsignedBigInteger('user_id');
-            $table->timestamps();
+	    $table->timestamps();
+	    $table->string('status_token', 64)->nullable();
         });
     }
 

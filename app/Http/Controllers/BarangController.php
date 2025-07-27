@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Lokasi;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
-    // Tampilkan daftar barang
+    // List semua barang (halaman index)
     public function index()
     {
         $barangs = Barang::with(['kategori', 'lokasi'])->latest()->paginate(10);
@@ -27,81 +28,112 @@ class BarangController extends Controller
     // Proses simpan barang baru
     public function store(Request $request)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'lokasi_id' => 'required|exists:lokasis,id',
-            // 'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        $validator = Validator::make($request->all(), [
+            'judul'        => 'required|string|max:255',
+            'deskripsi'    => 'required',
+            'kategori_id'  => 'required|exists:kategoris,id',
+            'lokasi_id'    => 'required|exists:lokasis,id',
+            'gambar'       => 'nullable|image|max:2048',
+            'no_wa'        => 'nullable|string|max:20',
         ]);
 
-        Barang::create([
-            'judul'      => $request->judul,
-            'deskripsi'  => $request->deskripsi,
-            'kategori_id'=> $request->kategori_id,
-            'lokasi_id'  => $request->lokasi_id,
-            'diambil'    => 0,
-            // 'gambar'  => (nanti kalau pakai upload gambar)
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
+        $data = $request->only(['judul', 'deskripsi', 'kategori_id', 'lokasi_id', 'no_wa']);
+
+        // Handle upload gambar (optional)
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('barangs', 'public');
+        }
+
+        // Simpan barang
+        $barang = Barang::create($data);
+
+        return redirect()->route('barang.show', $barang->slug)
+            ->with('success', 'Barang berhasil ditambahkan!');
     }
 
-    // Tampilkan detail barang
-    public function show($id)
+    // Tampilkan detail barang by SLUG
+    public function show($slug)
     {
-        $barang = Barang::with(['kategori', 'lokasi'])->findOrFail($id);
+        $barang = Barang::with(['kategori', 'lokasi'])->where('slug', $slug)->firstOrFail();
         return view('barang.show', compact('barang'));
     }
 
     // Form edit barang
-    public function edit($id)
+    public function edit($slug)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Barang::where('slug', $slug)->firstOrFail();
         $kategoris = Kategori::all();
         $lokasis = Lokasi::all();
         return view('barang.edit', compact('barang', 'kategoris', 'lokasis'));
     }
 
-    // Proses update barang
-    public function update(Request $request, $id)
+    // Update barang
+    public function update(Request $request, $slug)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Barang::where('slug', $slug)->firstOrFail();
 
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'lokasi_id' => 'required|exists:lokasis,id',
+        $validator = Validator::make($request->all(), [
+            'judul'        => 'required|string|max:255',
+            'deskripsi'    => 'required',
+            'kategori_id'  => 'required|exists:kategoris,id',
+            'lokasi_id'    => 'required|exists:lokasis,id',
+            'gambar'       => 'nullable|image|max:2048',
+            'no_wa'        => 'nullable|string|max:20',
         ]);
 
-        $barang->update([
-            'judul'      => $request->judul,
-            'deskripsi'  => $request->deskripsi,
-            'kategori_id'=> $request->kategori_id,
-            'lokasi_id'  => $request->lokasi_id,
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        return redirect()->route('barang.show', $barang->id)->with('success', 'Barang berhasil diupdate!');
+        $data = $request->only(['judul', 'deskripsi', 'kategori_id', 'lokasi_id', 'no_wa']);
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('barangs', 'public');
+        }
+
+        $barang->update($data);
+
+        return redirect()->route('barang.show', $barang->slug)
+            ->with('success', 'Barang berhasil diupdate!');
     }
 
-    // Proses hapus barang
-    public function destroy($id)
+    // Update status barang
+    public function updateStatus(Request $request, $slug)
     {
-        $barang = Barang::findOrFail($id);
-        $barang->delete();
-
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
-    }
-
-    // Update status barang (misal: sudah diambil)
-    public function updateStatus($id)
-    {
-        $barang = Barang::findOrFail($id);
-        $barang->diambil = 1; // Misal: 1 = sudah diambil
+        $barang = Barang::where('slug', $slug)->firstOrFail();
+        $barang->status = $request->input('status', 'diambil');
         $barang->save();
 
-        return redirect()->route('barang.index')->with('success', 'Status barang sudah diperbarui!');
+        return redirect()->route('barang.show', $barang->slug)
+            ->with('success', 'Status barang berhasil diupdate.');
+    }
+
+    // Hapus barang
+    public function destroy(Request $request, $slug)
+    {
+        $barang = Barang::where('slug', $slug)->firstOrFail();
+        $barang->delete();
+
+        return redirect()->route('barang.index')
+            ->with('success', 'Barang berhasil dihapus.');
+    }
+
+    // Update status by token (link khusus tanpa login)
+    public function updateStatusByToken($token)
+    {
+        $barang = Barang::where('status_token', $token)->firstOrFail();
+        $barang->status = 'diambil';
+        $barang->save();
+
+        return redirect()->route('beranda')->with('success', 'Status barang berhasil diupdate!');
     }
 }
 

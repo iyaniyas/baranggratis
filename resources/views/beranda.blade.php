@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('meta_title', 'BarangGratis.com - Platform Barang Bekas & Gratis Seluruh Indonesia')
+@section('meta_description', 'Platform terbesar untuk cari & berbagi barang bekas, barang gratis, second, furniture, elektronik, mainan, baju & lainnya. Semua gratis di seluruh Indonesia!')
+
 @section('content')
 <div class="container">
   <h1 class="mb-4">Cari Barang Gratis</h1>
@@ -82,3 +85,4 @@
   @endif
 </div>
 @endsection
+
