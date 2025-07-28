@@ -7,6 +7,7 @@
     $timestamp = Carbon::parse($barang->created_at)->format('Y-m-d');
     $judulLengkap = $barang->judul . ' - ' . $timestamp;
     $deskripsiRingkas = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
+    $deskripsiJsonLd = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 250);
     $gambarUrl = $barang->gambar ? asset('storage/'.$barang->gambar) : asset('no-image.jpg');
 @endphp
 
@@ -14,12 +15,39 @@
 @section('meta_description', $deskripsiRingkas)
 
 @section('meta')
-    <meta name="description" content="{{ $deskripsiRingkas }}">
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ $judulLengkap }}">
     <meta property="og:description" content="{{ $deskripsiRingkas }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:image" content="{{ $gambarUrl }}">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "{{ $barang->judul }}",
+      "image": [
+        "{{ $gambarUrl }}"
+      ],
+      "description": "{{ $deskripsiJsonLd }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "BarangGratis.com"
+      },
+      "category": "{{ $barang->kategori->nama ?? '' }}",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "IDR",
+        "availability": "{{ $barang->status === 'tersedia' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "itemCondition": "https://schema.org/UsedCondition",
+        "seller": {
+          "@type": "Organization",
+          "name": "BarangGratis.com"
+        }
+      }
+    }
+    </script>
 @endsection
 
 @section('content')
