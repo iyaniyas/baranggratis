@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')">
-    <title>@yield('title', 'BarangGratis.com')</title>
 
-    <!-- Bootswatch Darkly Theme -->
-    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet">
+    <!-- SEO Meta Tags -->
+    <title>@yield('meta_title', 'BarangGratis.com')</title>
+    <meta name="description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="@yield('og_type', 'website')" />
+    <meta property="og:title" content="@yield('meta_title', 'BarangGratis.com')" />
+    <meta property="og:description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:image" content="@yield('meta_image', asset('img/no-image.jpg'))" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@yield('meta_title', 'BarangGratis.com')" />
+    <meta name="twitter:description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')" />
+    <meta name="twitter:image" content="@yield('meta_image', asset('img/no-image.jpg'))" />
+
+    <!-- Local Darkly Theme CSS -->
+    <link href="{{ asset('css/darkly.min.css') }}" rel="stylesheet">
 
     <!-- Custom Overrides (jika diperlukan) -->
     <style>
-        /* Contoh: override warna background atau komponen lebih spesifik di sini */
+        /* Contoh: override gaya komponen spesifik di sini */
     </style>
 </head>
 <body>
