@@ -6,11 +6,12 @@
 
     $timestamp = Carbon::parse($barang->created_at)->format('Y-m-d');
     $judulLengkap = $barang->judul . ' - ' . $timestamp;
-    $deskripsiRingkas = Str::limit(strip_tags($barang->deskripsi), 150);
+    $deskripsiRingkas = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
     $gambarUrl = $barang->gambar ? asset('storage/'.$barang->gambar) : asset('no-image.jpg');
 @endphp
 
-@section('title', $judulLengkap)
+@section('meta_title', $judulLengkap)
+@section('meta_description', $deskripsiRingkas)
 
 @section('meta')
     <meta name="description" content="{{ $deskripsiRingkas }}">
