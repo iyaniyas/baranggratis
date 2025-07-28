@@ -8,7 +8,7 @@
     <style>
       /* container & H1 above-the-fold */
       .container { max-width: 960px; margin: 0 auto; padding: 1rem; }
-      h1.mb-4 { margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 500; }
+      h1.mb-4 { margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 200; }
       /* tambahkan rule lain yang dibutuhkan untuk layout hero */
     </style>
 

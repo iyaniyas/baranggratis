@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('meta_title', 'BarangGratis.com - Platform Barang Bekas & Gratis Seluruh Indonesia')
-@section('meta_description', 'Platform terbesar untuk cari & berbagi barang bekas, barang gratis, second, furniture, elektronik, mainan, baju & lainnya. Semua gratis di seluruh Indonesia!')
+@section('meta_title', 'Berbagi Menerima Barang Gratis – Mudah & Tanpa Ribet')
+@section('meta_description', 'Platform terbesar untuk cari & berbagi barang bekas, gratis, second, furniture, elektronik, mainan, baju & perlengkapan rumah lainnya. Semua gratis di seluruh Indonesia!')
 
 @section('content')
   <h1 class="mb-4">Cari Barang Gratis</h1>
@@ -11,61 +11,79 @@
     <div class="col-md-3">
       <input type="text" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ request('q') }}">
     </div>
-
     <div class="col-md-3">
-      <select name="kategori" class="form-select">
+      <label for="kategoriSelect" class="visually-hidden">Filter kategori</label>
+      <select id="kategoriSelect" name="kategori" class="form-select" aria-label="Filter kategori">
         <option value="">Semua Kategori</option>
-        @foreach ($kategoriList as $kategori)
-          <option value="{{ $kategori->id }}" {{ request('kategori') == $kategori->id ? 'selected' : '' }}>
-            {{ $kategori->nama }}
-          </option>
+        @foreach($kategoriList as $kategori)
+          <option value="{{ $kategori->slug }}" {{ request('kategori') == $kategori->slug ? 'selected' : '' }}>{{ $kategori->nama }}</option>
         @endforeach
       </select>
     </div>
-
     <div class="col-md-3">
-      <select name="lokasi" class="form-select">
+      <label for="lokasiSelect" class="visually-hidden">Filter lokasi</label>
+      <select id="lokasiSelect" name="lokasi" class="form-select" aria-label="Filter lokasi">
         <option value="">Semua Lokasi</option>
-        @foreach ($lokasiList as $lokasi)
-          <option value="{{ $lokasi->id }}" {{ request('lokasi') == $lokasi->id ? 'selected' : '' }}>
-            {{ $lokasi->nama }}
-          </option>
+        @foreach($lokasiList as $lokasi)
+          <option value="{{ $lokasi->slug }}" {{ request('lokasi') == $lokasi->slug ? 'selected' : '' }}>{{ $lokasi->nama }}</option>
         @endforeach
       </select>
     </div>
-
     <div class="col-md-3">
-      <select name="status" class="form-select">
+      <label for="statusSelect" class="visually-hidden">Filter status</label>
+      <select id="statusSelect" name="status" class="form-select" aria-label="Filter status">
         <option value="">Semua Status</option>
-        <option value="tersedia" {{ request('status') == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-        <option value="diambil" {{ request('status') == 'diambil' ? 'selected' : '' }}>Sudah Diambil</option>
+        <option value="tersedia" {{ request('status')=='tersedia'? 'selected':'' }}>Tersedia</option>
+        <option value="sudah-diambil" {{ request('status')=='sudah-diambil'? 'selected':'' }}>Sudah Diambil</option>
       </select>
     </div>
-
     <div class="col-12">
       <button type="submit" class="btn btn-primary w-100">🔍 Cari Barang</button>
     </div>
   </form>
 
   <!-- DAFTAR BARANG -->
-  @if ($barangs->count())
+  @if($barangs->count())
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      @foreach ($barangs as $barang)
+      @foreach($barangs as $barang)
         <div class="col">
-          <div class="card h-100">
+          <div class="card h-100" style="background-color:#222;">
             <div class="card-body">
-              <h5 class="card-title">{{ $barang->nama }}</h5>
+              <!-- Judul Barang -->
+              <h2 class="card-title h5">
+                <a href="{{ route('barang.show', $barang->slug) }}" class="link-light text-decoration-none">
+                  {{ $barang->judul }}
+                </a>
+              </h2>
 
-              <p class="text-light mb-1">📁 Kategori: {{ $barang->kategori->nama ?? '-' }}</p>
-              <p class="text-light mb-1">📍 Lokasi: {{ $barang->lokasi->nama ?? '-' }}</p>
-
-              <p class="{{ $barang->diambil ? 'text-danger' : 'text-success' }}">
-                {{ $barang->diambil ? 'Sudah Diambil' : 'Tersedia' }}
+              <p class="text-light mb-1">
+                📁 Kategori:
+                @if($barang->kategori)
+                  <a href="{{ route('kategori.show', $barang->kategori->slug) }}" class="link-light">{{ $barang->kategori->nama }}</a>
+                @else
+                  -
+                @endif
               </p>
 
-              @if ($barang->deskripsi)
+              <p class="text-light mb-1">
+                📍 Lokasi:
+                @if($barang->lokasi)
+                  <a href="{{ route('lokasi.show', $barang->lokasi->slug) }}" class="link-light">{{ $barang->lokasi->nama }}</a>
+                @else
+                  -
+                @endif
+              </p>
+
+              <p class="{{ $barang->diambil? 'text-danger':'text-success' }}">
+                {{ $barang->diambil? 'Sudah Diambil':'Tersedia' }}
+              </p>
+
+              @if($barang->deskripsi)
                 <p>{{ \Illuminate\Support\Str::limit($barang->deskripsi, 100) }}</p>
               @endif
+
+              <!-- Tombol Detail Barang -->
+              <a href="{{ route('barang.show', $barang->slug) }}" class="btn btn-sm btn-outline-light mt-2">Lihat Detail</a>
             </div>
             <div class="card-footer text-muted small">
               Diposting: {{ $barang->created_at->format('d M Y') }}
@@ -82,6 +100,5 @@
   @else
     <div class="alert alert-info">Tidak ada barang ditemukan sesuai filter/pencarian.</div>
   @endif
-</div>
 @endsection
 
