@@ -18,7 +18,7 @@
     {{-- Kategori --}}
     @foreach($kategoris as $kategori)
         <url>
-            <loc>{{ url('/kategori/' . $kategori->id) }}</loc>
+            <loc>{{ url('/kategori/'.$kategori->slug) }}</loc>
             <priority>0.7</priority>
         </url>
     @endforeach
@@ -26,7 +26,7 @@
     {{-- Lokasi --}}
     @foreach($lokasis as $lokasi)
         <url>
-            <loc>{{ url('/lokasi/' . $lokasi->id) }}</loc>
+            <loc>{{ url('/lokasi/'.$lokasi->slug) }}</loc>
             <priority>0.7</priority>
         </url>
     @endforeach

@@ -38,6 +38,11 @@ Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
 Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
 
+//kategori pakai slug
+Route::get('/kategori/{slug}', [BarangController::class, 'kategori'])->name('kategori.show');
+//lokasi pakai slug
+Route::get('/lokasi/{slug}', [BarangController::class, 'lokasi'])->name('lokasi.show');
+
 // Detail, edit, update, status, delete pakai {slug}
 Route::get('/barang/{slug}', [BarangController::class, 'show'])->name('barang.show');
 Route::get('/barang/{slug}/edit', [BarangController::class, 'edit'])->name('barang.edit');
