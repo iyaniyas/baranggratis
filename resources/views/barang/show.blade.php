@@ -26,31 +26,61 @@
 
 @section('content')
 <div class="container py-4">
-    <div class="card bg-dark text-light">
-        @if($gambarUrl)
-            <img src="{{ $gambarUrl }}" class="card-img-top" alt="{{ $barang->judul }}">
-        @endif
-        <div class="card-body">
-            <h2 class="card-title">{{ $barang->judul }}</h2>
-            <p><b>Kategori:</b> {{ $barang->kategori->nama ?? '-' }}</p>
-            <p><b>Lokasi:</b> {{ $barang->lokasi->nama ?? '-' }}</p>
-            <p><b>Alamat Pengambilan:</b> {{ $barang->alamat_pengambilan ?? '-' }}</p>
-            <p><b>Deskripsi:</b><br>{!! nl2br(e($barang->deskripsi)) !!}</p>
-            <p><b>Status:</b> {{ ucfirst($barang->status) }}</p>
+    <!--
+        Gunakan grid Bootstrap untuk membuat tampilan detail barang lebih menarik
+        dan responsif. Baris ini akan menempatkan kartu di tengah layar dan
+        membatasi lebarnya pada layar besar. Kartu dibuat tanpa border dengan
+        bayangan halus untuk kesan modern. Overflow tersembunyi memastikan
+        gambar dan konten tidak melampaui tepi kartu.
+    -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0 overflow-hidden mb-4">
+                <div class="row g-0">
+                    @if($gambarUrl)
+                        <!--
+                            Gambar ditempatkan dalam kolom tersendiri agar terlihat seperti
+                            thumbnail. Gambar akan mengisi kolom sepenuhnya dengan tetap
+                            mempertahankan rasio dan memotong bagian yang berlebih berkat
+                            properti object-fit: cover. Ini menghasilkan tampilan ringkas
+                            untuk gambar beresolusi besar.
+                        -->
+                        <div class="col-md-5">
+                            <img src="{{ $gambarUrl }}" alt="{{ $barang->judul }}"
+                                 class="img-fluid h-100 w-100"
+                                 style="object-fit: cover;">
+                        </div>
+                    @endif
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h2 class="card-title mb-3">{{ $barang->judul }}</h2>
+                            <p><strong>Kategori:</strong> {{ $barang->kategori->nama ?? '-' }}</p>
+                            <p><strong>Lokasi:</strong> {{ $barang->lokasi->nama ?? '-' }}</p>
+                            <p><strong>Alamat Pengambilan:</strong> {{ $barang->alamat_pengambilan ?? '-' }}</p>
+                            <p><strong>Deskripsi:</strong><br>{!! nl2br(e($barang->deskripsi)) !!}</p>
+                            <p><strong>Status:</strong> {{ ucfirst($barang->status) }}</p>
 
-            @if($barang->status === 'tersedia')
-                <form action="{{ route('barang.updateStatus', $barang->slug) }}"
-                      method="POST" class="mt-4">
-                    @csrf
-                    <input type="hidden" name="status" value="sudah diambil">
-                    <button type="submit" class="btn btn-warning"
-                            onclick="return confirm('Yakin ingin mengubah status jadi sudah diambil?')">
-                        Tandai Sudah Diambil
-                    </button>
-                </form>
-            @endif
+                            @if($barang->status === 'tersedia')
+                                <!--
+                                    Tampilkan tombol klaim via WhatsApp dan tombol untuk pemilik
+                                    menandai barang sudah diambil bila status barang masih
+                                    tersedia. Pesan WA dibuat otomatis dengan menyisipkan judul
+                                    barang agar memudahkan pemilik mengidentifikasi permintaan.
+                                -->
+                                <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
+                                    <a href="https://wa.me/{{ $barang->no_wa }}?text={{ urlencode('Halo, saya tertarik dengan barang ' . $barang->judul) }}"
+                                       target="_blank" class="btn btn-success">
+                                        Klaim Barang via WhatsApp
+                                    </a>                                  
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 @endsection
+
 
