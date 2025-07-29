@@ -16,11 +16,12 @@ class Barang extends Model
         'kategori_id',
         'lokasi_id',
         'gambar',
+        'alamat_pengambilan',
         'status',
         'user_id',
         'status_token',
         'no_wa',
-        'slug', // pastikan slug juga ada
+        'slug',
     ];
 
     public function kategori()
@@ -33,7 +34,7 @@ class Barang extends Model
         return $this->belongsTo(Lokasi::class);
     }
 
-    // LOGIKA SLUG UNIK (dalam class Barang)
+    // LOGIKA SLUG UNIK
     public static function boot()
     {
         parent::boot();
@@ -52,15 +53,13 @@ class Barang extends Model
     public static function generateUniqueSlug($judul, $id = null)
     {
         $baseSlug = Str::slug($judul . '-' . now()->format('Y-m-d'));
-        $slug = $baseSlug;
-        $n = 1;
+        $slug     = $baseSlug;
+        $n        = 1;
 
         while (
             static::where('slug', $slug)
-                ->when($id, function ($query) use ($id) {
-                    $query->where('id', '!=', $id);
-                })
-                ->exists()
+                  ->when($id, fn($q) => $q->where('id', '!=', $id))
+                  ->exists()
         ) {
             $slug = $baseSlug . '-' . $n++;
         }

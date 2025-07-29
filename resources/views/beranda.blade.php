@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Berbagi Menerima Barang Gratis – Mudah & Tanpa Ribet')
+@section('meta_title', 'BarangGratis: Berbagi & Menerima Cepat Aman')
 @section('meta_description', 'Platform terbesar untuk cari & berbagi barang bekas, gratis, second, furniture, elektronik, mainan, baju & perlengkapan rumah lainnya. Semua gratis di seluruh Indonesia!')
 
 @section('content')
@@ -74,9 +74,9 @@
                 @endif
               </p>
 
-              <p class="{{ $barang->diambil? 'text-danger':'text-success' }}">
-                {{ $barang->diambil? 'Sudah Diambil':'Tersedia' }}
-              </p>
+              <p class="{{ $barang->status === 'tersedia' ? 'text-success' : 'text-danger' }}">
+		  {{ $barang->status === 'tersedia' ? 'Tersedia' : 'Sudah Diambil' }}
+	      </p>
 
               @if($barang->deskripsi)
                 <p>{{ \Illuminate\Support\Str::limit($barang->deskripsi, 100) }}</p>
