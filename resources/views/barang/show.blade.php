@@ -14,24 +14,23 @@
 
 @section('meta_title', $judulLengkap)
 @section('meta_description', $deskripsiRingkas)
+@section('meta_image', $gambarUrl)
+@section('og_type', 'product')
 
-@section('meta')
-    <meta name="description" content="{{ $deskripsiRingkas }}">
-    <meta property="og:type"        content="article">
-    <meta property="og:title"       content="{{ $judulLengkap }}">
-    <meta property="og:description" content="{{ $deskripsiRingkas }}">
-    <meta property="og:url"         content="{{ url()->current() }}">
-    <meta property="og:image"       content="{{ $gambarUrl }}">
-@endsection
+{{--
+    Bagian meta khusus seperti og:type dan meta image diatur melalui section
+    'og_type' dan 'meta_image'. Schema JSON-LD akan disisipkan di bagian
+    konten supaya tetap terdeteksi oleh mesin pencari meski layout tidak
+    menyediakan slot meta khusus.
+--}}
 
 @section('content')
 <div class="container py-4">
     <!--
-        Gunakan grid Bootstrap untuk membuat tampilan detail barang lebih menarik
-        dan responsif. Baris ini akan menempatkan kartu di tengah layar dan
-        membatasi lebarnya pada layar besar. Kartu dibuat tanpa border dengan
-        bayangan halus untuk kesan modern. Overflow tersembunyi memastikan
-        gambar dan konten tidak melampaui tepi kartu.
+        Gunakan grid Bootstrap untuk menempatkan kartu di tengah halaman dan
+        menyesuaikan lebarnya secara responsif. Kartu memiliki bayangan dan
+        tanpa border untuk tampilan yang lebih bersih. Overflow disembunyikan
+        agar gambar dan konten tidak keluar dari area kartu.
     -->
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
@@ -39,11 +38,10 @@
                 <div class="row g-0">
                     @if($gambarUrl)
                         <!--
-                            Gambar ditempatkan dalam kolom tersendiri agar terlihat seperti
-                            thumbnail. Gambar akan mengisi kolom sepenuhnya dengan tetap
-                            mempertahankan rasio dan memotong bagian yang berlebih berkat
-                            properti object-fit: cover. Ini menghasilkan tampilan ringkas
-                            untuk gambar beresolusi besar.
+                            Gambar ditempatkan di kolom tersendiri agar tampil sebagai
+                            thumbnail. Dengan class img-fluid serta penambahan style
+                            object-fit: cover, gambar akan memenuhi kolom dan tetap
+                            terpotong rapi.
                         -->
                         <div class="col-md-5">
                             <img src="{{ $gambarUrl }}" alt="{{ $barang->judul }}"
@@ -62,16 +60,16 @@
 
                             @if($barang->status === 'tersedia')
                                 <!--
-                                    Tampilkan tombol klaim via WhatsApp dan tombol untuk pemilik
-                                    menandai barang sudah diambil bila status barang masih
-                                    tersedia. Pesan WA dibuat otomatis dengan menyisipkan judul
-                                    barang agar memudahkan pemilik mengidentifikasi permintaan.
+                                    Saat barang masih tersedia, tampilkan tombol klaim via
+                                    WhatsApp untuk calon penerima dan tombol "Tandai Sudah
+                                    Diambil" untuk pemilik. Pesan WA diisi otomatis dengan
+                                    judul barang untuk memudahkan komunikasi.
                                 -->
                                 <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
                                     <a href="https://wa.me/{{ $barang->no_wa }}?text={{ urlencode('Halo, saya tertarik dengan barang ' . $barang->judul) }}"
                                        target="_blank" class="btn btn-success">
                                         Klaim Barang via WhatsApp
-                                    </a>                                  
+                                    </a>
                                 </div>
                             @endif
                         </div>
@@ -81,6 +79,37 @@
         </div>
     </div>
 </div>
+    @php
+        // Data Schema.org Product ditambahkan di dalam konten agar mudah
+        // dideteksi oleh mesin pencari. Nilai price selalu 0 karena semua
+        // barang bersifat gratis. Availability mengikuti status barang.
+        $productAvailability = $barang->status === 'tersedia'
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock';
+        $schemaData = [
+            '@context' => 'https://schema.org',
+            '@type'    => 'Product',
+            'name'     => $barang->judul,
+            'description' => strip_tags($barang->deskripsi),
+            'image'    => $gambarUrl,
+            'sku'      => $barang->slug,
+            'brand'    => [
+                '@type' => 'Brand',
+                'name'  => 'Barang Gratis',
+            ],
+            'offers'   => [
+                '@type'         => 'Offer',
+                'priceCurrency' => 'IDR',
+                'price'         => 0,
+                'availability'  => $productAvailability,
+                'url'           => url()->current(),
+                'itemCondition' => 'https://schema.org/UsedCondition',
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">
+        {!! json_encode($schemaData, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
+    </script>
 @endsection
 
 
