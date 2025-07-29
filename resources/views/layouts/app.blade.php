@@ -28,17 +28,17 @@
     <meta name="keywords" content="@yield('meta_keywords', 'barang gratis, barang bekas, donate, share, komunitas')">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="@yield('og_type', 'website')" />
-    <meta property="og:title" content="@yield('meta_title', 'BarangGratis.com')" />
-    <meta property="og:description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')" />
-    <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:image" content="@yield('meta_image', asset('img/no-image.jpg'))" />
+<meta property="og:type" content="@yield('og_type','website')">
+<meta property="og:title" content="@yield('meta_title','BarangGratis.com')">
+<meta property="og:description" content="@yield('meta_description','Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')">
+<meta property="og:url" content="@yield('meta_url', strtolower(url()->full()))">
+<meta property="og:image" content="@yield('meta_image', asset('img/no-image.jpg'))">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="@yield('meta_title', 'BarangGratis.com')" />
-    <meta name="twitter:description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')" />
-    <meta name="twitter:image" content="@yield('meta_image', asset('img/no-image.jpg'))" />
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@yield('meta_title','BarangGratis.com')">
+<meta name="twitter:description" content="@yield('meta_description','Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')">
+<meta name="twitter:image" content="@yield('meta_image', asset('img/no-image.jpg'))">
 
     <!-- Local Darkly Theme CSS -->
     <link href="{{ asset('css/darkly.min.css') }}" rel="stylesheet">
@@ -47,6 +47,7 @@
     <style>
         /* Contoh override gaya komponen spesifik di sini */
     </style>
+    <link rel="icon" href="{{ asset('favicon.png') }}">
 </head>
 <body>
     @include('layouts.navigation')

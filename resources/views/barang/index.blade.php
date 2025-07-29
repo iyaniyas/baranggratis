@@ -1,5 +1,41 @@
 @extends('layouts.app')
 
+@php
+    // Judul dan deskripsi SEO untuk halaman daftar barang.
+    $metaTitle = 'Daftar Barang Gratis - BarangGratis.com';
+    $metaDescription = 'Jelajahi daftar barang bekas gratis di berbagai kategori dan lokasi di Indonesia. '
+        .'Temukan furnitur, elektronik, pakaian, mainan, dan perlengkapan rumah tangga tanpa biaya.';
+@endphp
+
+@php
+    // Ambil nama kategori/lokasi jika tersedia. Anda bisa menggunakan koleksi
+    // yang sudah dikirim controller atau mengambil dari model langsung.
+    $titleParts = [];
+
+    if(request()->filled('kategori')) {
+        // Misalnya controller sudah mengirim $kategoriList, cari nama kategori.
+        $kategoriNama = $kategoriList->firstWhere('id', request('kategori'))->nama ?? request('kategori');
+        $titleParts[] = "Kategori {$kategoriNama}";
+    }
+
+    if(request()->filled('lokasi')) {
+        $lokasiNama = $lokasiList->firstWhere('id', request('lokasi'))->nama ?? request('lokasi');
+        $titleParts[] = "Lokasi {$lokasiNama}";
+    }
+
+    if(request()->filled('q')) {
+        $titleParts[] = 'Pencarian "' . request('q') . '"';
+    }
+
+    // Susun judul. Jika tidak ada filter, gunakan judul umum.
+    $metaTitle = $titleParts
+        ? implode(' - ', $titleParts) . ' | BarangGratis.com'
+        : 'Daftar Barang Gratis | BarangGratis.com';
+@endphp
+
+@section('meta_title', $metaTitle)
+@section('meta_description', $metaDescription)
+
 @section('content')
 <div class="container py-4 bg-dark text-light min-vh-100">
     <h2 class="mb-4 text-light">Daftar Barang</h2>

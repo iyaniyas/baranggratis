@@ -19,7 +19,11 @@ Route::get('/', function (Request $request) {
         $query->where('kategori_id', $request->kategori);
     }
     if ($request->filled('lokasi')) {
-        $query->where('lokasi_id', $request->lokasi);
+    // cari id berdasarkan slug sebelum memfilter
+    $lokasi = \App\Models\Lokasi::where('slug', $request->lokasi)->first();
+    if ($lokasi) {
+        $query->where('lokasi_id', $lokasi->id);
+    }
     }
 
     $barangs = $query->latest()->paginate(10);
