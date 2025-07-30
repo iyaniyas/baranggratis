@@ -1,44 +1,110 @@
 @extends('layouts.app')
 
 @php
-    // Judul dan deskripsi SEO untuk halaman daftar barang.
-    $metaTitle = 'Daftar Barang Gratis - BarangGratis.com';
-    $metaDescription = 'Jelajahi daftar barang bekas gratis di berbagai kategori dan lokasi di Indonesia. '
-        .'Temukan furnitur, elektronik, pakaian, mainan, dan perlengkapan rumah tangga tanpa biaya.';
-@endphp
+    use App\Models\Barang;
+    use App\Models\Lokasi;
 
-@php
-    // Ambil nama kategori/lokasi jika tersedia. Anda bisa menggunakan koleksi
-    // yang sudah dikirim controller atau mengambil dari model langsung.
-    $titleParts = [];
+    // Parameter filter dari query string
+    $q          = request()->input('q');
+    $lokasiParam = request()->input('lokasi');
 
-    if(request()->filled('kategori')) {
-        // Misalnya controller sudah mengirim $kategoriList, cari nama kategori.
-        $kategoriNama = $kategoriList->firstWhere('id', request('kategori'))->nama ?? request('kategori');
-        $titleParts[] = "Kategori {$kategoriNama}";
+    // Data lokasi untuk dropdown
+    $lokasiList = Lokasi::all();
+
+    // Siapkan parameter untuk canonical URL dan meta title/description
+    $params = [];
+    $parts  = [];
+
+    if ($q) {
+        $parts[]     = 'Pencarian "' . $q . '"';
+        $params['q'] = strtolower($q);
     }
 
-    if(request()->filled('lokasi')) {
-        $lokasiNama = $lokasiList->firstWhere('id', request('lokasi'))->nama ?? request('lokasi');
-        $titleParts[] = "Lokasi {$lokasiNama}";
+    if ($lokasiParam) {
+        // Cari lokasi berdasarkan ID atau slug untuk meta
+        $lokasiObj  = $lokasiList->firstWhere('id', $lokasiParam) ?: $lokasiList->firstWhere('slug', $lokasiParam);
+        $lokasiName = $lokasiObj ? $lokasiObj->nama : $lokasiParam;
+        $lokasiSlug = $lokasiObj ? $lokasiObj->slug : \Illuminate\Support\Str::slug($lokasiName);
+        $parts[] = 'Lokasi ' . $lokasiName;
+        $params['lokasi'] = strtolower($lokasiSlug); // slug disimpan dalam huruf kecil untuk URL konsisten:contentReference[oaicite:0]{index=0}
     }
 
-    if(request()->filled('q')) {
-        $titleParts[] = 'Pencarian "' . request('q') . '"';
+    // Meta title dan description default
+    $metaTitle       = 'Daftar Barang Gratis | BarangGratis.com';
+    $metaDescription = 'Temukan berbagai barang bekas gratis di berbagai kategori dan lokasi di Indonesia.';
+    if ($parts) {
+        $metaTitle       = implode(' - ', $parts) . ' | BarangGratis.com';
+        $metaDescription = 'Hasil ' . strtolower(implode(' dan ', $parts)) . ' di BarangGratis.com. '
+            . 'Temukan barang bekas gratis, second, furniture, elektronik, mainan, baju & perlengkapan rumah di berbagai lokasi di Indonesia.';
     }
 
-    // Susun judul. Jika tidak ada filter, gunakan judul umum.
-    $metaTitle = $titleParts
-        ? implode(' - ', $titleParts) . ' | BarangGratis.com'
-        : 'Daftar Barang Gratis | BarangGratis.com';
+    // Bangun canonical URL yang selalu huruf kecil
+    $metaUrl = url('/barang') . ($params ? '?' . http_build_query($params) : '');
+    $metaUrl = strtolower($metaUrl);
+
+    // Susun judul halaman (H1) berdasarkan filter
+    // Default judul adalah 'Daftar Barang', lalu ditambahkan kata kunci dan lokasi jika ada
+    $heading = 'Daftar Barang';
+    if ($q) {
+        $heading .= ' "' . $q . '"';
+    }
+    if ($lokasiParam) {
+        // Cari nama lokasi lagi untuk judul (agar tidak bergantung pada $lokasiObj di atas)
+        $headingLok  = $lokasiList->firstWhere('id', $lokasiParam) ?: $lokasiList->firstWhere('slug', $lokasiParam);
+        $lokasiNamaHeading = $headingLok ? $headingLok->nama : $lokasiParam;
+        $heading .= ' di ' . $lokasiNamaHeading;
+    }
+
+    // Query barang dengan filter (tanpa mengubah controller)
+    $barangQuery = Barang::with(['kategori', 'lokasi']);
+    if ($q) {
+        $search = strtolower($q);
+        $barangQuery->where(function ($query) use ($search) {
+            $query->whereRaw('LOWER(judul) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(deskripsi) LIKE ?', ['%' . $search . '%']);
+        });
+    }
+    if ($lokasiParam) {
+        $lokasiFiltered = $lokasiList->firstWhere('id', $lokasiParam) ?: $lokasiList->firstWhere('slug', $lokasiParam);
+        if ($lokasiFiltered) {
+            $barangQuery->where('lokasi_id', $lokasiFiltered->id);
+        }
+    }
+    // withQueryString agar link paginasi tetap membawa parameter filter:contentReference[oaicite:1]{index=1}
+    $barangs = $barangQuery->latest()->paginate(10)->withQueryString();
 @endphp
 
 @section('meta_title', $metaTitle)
 @section('meta_description', $metaDescription)
+@section('meta_url', $metaUrl)
 
 @section('content')
 <div class="container py-4 bg-dark text-light min-vh-100">
-    <h2 class="mb-4 text-light">Daftar Barang</h2>
+    {{-- Judul halaman dinamis --}}
+    <h2 class="mb-4 text-light">{{ $heading }}</h2>
+
+    {{-- Form filter pencarian dan lokasi --}}
+    <div class="mb-4 p-3 bg-dark text-light rounded">
+        <form method="GET" action="{{ url('/barang') }}" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ request('q') }}">
+            </div>
+            <div class="col-md-4">
+                <select name="lokasi" class="form-select">
+                    <option value="">Semua Lokasi</option>
+                    @foreach ($lokasiList as $lokasi)
+                        <option value="{{ strtolower($lokasi->slug) }}"
+                            {{ (request('lokasi') == strtolower($lokasi->slug) || request('lokasi') == $lokasi->id) ? 'selected' : '' }}>
+                            {{ $lokasi->nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Cari</button>
+            </div>
+        </form>
+    </div>
 
     {{-- Alert sukses --}}
     @if(session('success'))

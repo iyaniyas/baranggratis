@@ -1,53 +1,14 @@
 @extends('layouts.app')
 
 @php
-    // Tangkap parameter q dan lokasi (id)
-    $q        = request()->input('q');
-    $lokasiId = request()->input('lokasi');
-
-    // Siapkan array untuk querystring canonical (semua huruf kecil)
-    $params = [];
-    $parts  = [];
-
-    // Jika ada pencarian, simpan ke querystring & judul
-    if ($q) {
-        $parts[]       = 'Pencarian "' . $q . '"';
-        $params['q']   = strtolower($q);     // query disimpan huruf kecil
-    }
-
-    // Jika ada filter lokasi (id), cari nama lokasinya untuk judul & isi querystring
-    if ($lokasiId) {
-        $lokasiObj  = $lokasiList->firstWhere('id', $lokasiId);
-        $lokasiName = $lokasiObj ? $lokasiObj->nama : $lokasiId;
-        $lokasiSlug = $lokasiObj ? $lokasiObj->slug : \Illuminate\Support\Str::slug($lokasiName);
-
-        // Tambahkan nama lokasi ke judul
-        $parts[] = 'Lokasi ' . $lokasiName;
-
-        // Gunakan slug (huruf kecil) untuk canonical URL
-        $params['lokasi'] = strtolower($lokasiSlug);
-    }
-
-    // Nilai default judul & deskripsi
+    // Meta statis untuk halaman beranda
     $metaTitle       = 'Barang Gratis: Berbagi & Menerima Cepat Aman';
     $metaDescription = 'Platform terbesar untuk cari & berbagi barang bekas, gratis, second, furniture, elektronik, mainan, baju & perlengkapan rumah lainnya. Semua gratis di seluruh Indonesia!';
-
-    // Susun judul & deskripsi jika ada filter
-    if ($parts) {
-        $metaTitle       = implode(' - ', $parts) . ' | BarangGratis.com';
-        $metaDescription = 'Hasil ' . strtolower(implode(' dan ', $parts))
-            . ' di BarangGratis.com. Temukan barang bekas gratis, second, furniture, elektronik, mainan, baju & perlengkapan rumah di berbagai lokasi di Indonesia.';
-    }
-
-    // Bangun URL huruf kecil untuk og:url dan canonical
-    $metaUrl = url('/') . ($params ? '?' . http_build_query($params) : '');
-    $metaUrl = strtolower($metaUrl);
 @endphp
 
 @section('meta_title',       $metaTitle)
 @section('meta_description', $metaDescription)
-@section('meta_keywords',    'barang gratis, barang bekas gratis, pencarian barang, lokasi barang gratis')
-@section('meta_url',         $metaUrl)
+@section('meta_url',         url('/'))
 
 @section('content')
     <!-- Judul utama -->
@@ -103,10 +64,10 @@
         </div>
     </div>
 
-    <!-- Form filter -->
+    <!-- Form pencarian: arahkan ke /barang agar filter diproses di halaman daftar -->
     <div class="mb-5 p-4 bg-dark text-light rounded">
         <h2 class="h4 text-center mb-3">Cari Barang Gratis</h2>
-        <form method="GET" action="{{ route('beranda') }}" class="row g-3 justify-content-center align-items-end">
+        <form method="GET" action="{{ url('/barang') }}" class="row g-3 justify-content-center align-items-end">
             <div class="col-md-3">
                 <label for="q" class="visually-hidden">Cari nama barang</label>
                 <input type="text" id="q" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ request('q') }}">
@@ -116,9 +77,10 @@
                 <select id="lokasiSelect" name="lokasi" class="form-select" aria-label="Filter lokasi">
                     <option value="">Semua Lokasi</option>
                     @foreach($lokasiList as $lokasi)
+                        <!-- gunakan slug sebagai value agar URL tetap konsisten -->
                         <option value="{{ $lokasi->slug }}" {{ request('lokasi') == $lokasi->slug ? 'selected' : '' }}>
-			    {{ $lokasi->nama }}
-			</option>
+                            {{ $lokasi->nama }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -128,6 +90,7 @@
         </form>
     </div>
 
+    <!-- Tampilkan cuplikan 3 barang terbaru -->
     @if($barangs->count())
         <div class="row row-cols-1 row-cols-md-3 g-4">
             @foreach($barangs->take(3) as $barang)
@@ -184,7 +147,7 @@
             <a href="/barang" class="btn btn-lg btn-light text-dark fw-bold">Lihat Semua Barang Gratis</a>
         </div>
     @else
-        <div class="alert alert-info">Tidak ada barang ditemukan sesuai filter/pencarian.</div>
+        <div class="alert alert-info">Tidak ada barang ditemukan.</div>
     @endif
 @endsection
 
