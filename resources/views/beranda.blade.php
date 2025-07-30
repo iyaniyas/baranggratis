@@ -8,12 +8,13 @@
 
 @section('meta_title',       $metaTitle)
 @section('meta_description', $metaDescription)
+@section('meta_keywords',    'barang gratis, barang bekas gratis, pencarian barang, lokasi barang gratis')
 @section('meta_url',         url('/'))
 
 @section('content')
     <!-- Judul utama -->
-    <h1 class="mb-4 text-center">
-        Temukan &amp; Bagikan Barang Bekas Gratis di Indonesia
+    <h1 class="mb-3 text-center fs-4">
+        Temukan &amp; Bagikan Barang Gratis
     </h1>
 
     <!-- Bagian kenapa BarangGratis -->
@@ -125,7 +126,8 @@
                                 @endif
                             </p>
 
-                            <p class="{{ $barang->status === 'tersedia' ? 'text-success' : 'text-danger' }} fw-bold">
+                            {{-- Status: tampilkan badge hijau bila tersedia, dan teks biasa bila sudah diambil --}}
+                            <p class="{{ $barang->status === 'tersedia' ? 'fw-bold px-2 py-1 rounded bg-success text-dark' : 'text-light fw-bold' }}">
                                 {{ $barang->status === 'tersedia' ? 'Tersedia' : 'Sudah Diambil' }}
                             </p>
 
