@@ -63,7 +63,23 @@
 
                         <div class="mb-3">
                             <label for="gambar" class="form-label">Gambar</label>
-                            <input type="file" name="gambar" class="form-control">
+                            <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" required>
+<small class="form-text text-danger" id="file-size-warning" style="display:none">
+    Ukuran file terlalu besar (maksimal 10MB)
+</small>
+<script>
+document.getElementById('gambar').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    var warning = document.getElementById('file-size-warning');
+    if (file && file.size > 10 * 1024 * 1024) {
+        warning.style.display = 'block';
+        e.target.value = '';
+    } else {
+        warning.style.display = 'none';
+    }
+});
+</script>
+
                         </div>
 
                         <div class="mb-3">

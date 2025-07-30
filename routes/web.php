@@ -37,6 +37,11 @@ Route::get('/', function (Request $request) {
     ]);
 })->name('beranda');
 
+Route::get('/test-image', function() {
+    return \Intervention\Image\Facades\Image::canvas(100, 100, '#ff0000')->response('png');
+});
+
+
 // Barang - pakai slug
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');

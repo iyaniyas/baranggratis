@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Lokasi;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Str;
 
 class BarangController extends Controller
 {
@@ -28,37 +29,64 @@ class BarangController extends Controller
 
     // Proses simpan barang baru
     public function store(Request $request)
-    {
-        $request->validate([
-            'judul'               => 'required|string|max:255',
-            'deskripsi'           => 'required',
-            'kategori_id'         => 'required|exists:kategoris,id',
-            'lokasi_id'           => 'required|exists:lokasis,id',
-            'gambar'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-	    'alamat_pengambilan'  => 'nullable|string|max:255',
-	    'no_wa' => 'required|digits_between:10,15',
-        ]);
+{
+    $request->validate([
+        'judul'               => 'required|string|max:255',
+        'deskripsi'           => 'required',
+        'kategori_id'         => 'required|exists:kategoris,id',
+        'lokasi_id'           => 'required|exists:lokasis,id',
+        'gambar'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'alamat_pengambilan'  => 'nullable|string|max:255',
+        'no_wa'               => 'required|digits_between:10,15',
+    ]);
 
-        $data = $request->only([
-            'judul', 'deskripsi', 'kategori_id', 'lokasi_id', 'alamat_pengambilan', 'no_wa',
-	]);
-	// tambahkan status dan token
-        $data['status']       = 'tersedia';
-        $data['status_token'] = Str::random(32);
-	
-	// simpan gambar jika ada
-        if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('barang', 'public');
+    // Ambil input dasar
+    $data = $request->only([
+        'judul',
+        'deskripsi',
+        'kategori_id',
+        'lokasi_id',
+        'alamat_pengambilan',
+        'no_wa',
+    ]);
+
+    // Tambahkan status dan token
+    $data['status']       = 'tersedia';
+    $data['status_token'] = Str::random(32);
+
+    // Proses upload & konversi gambar ke WebP
+    if ($request->hasFile('gambar')) {
+        $imgFile  = $request->file('gambar');
+        $filename = Str::random(16) . '.webp';
+
+        // Baca dan skala proporsional (lebar max 1024px)
+        $image = Image::read($imgFile)
+            ->scaleDown(width: 1024);
+
+        // Encode ke WebP (kualitas 90)
+        $encoded = $image->encodeByExtension('webp', quality: 90);
+
+        // Pastikan folder 'public/barang/webp' ada
+        if (! Storage::exists('public/barang/webp')) {
+            Storage::makeDirectory('public/barang/webp');
         }
 
-        $barang = Barang::create($data);
+        // Simpan file WebP
+	Storage::disk('public')->put('barang/webp/'.$filename, $encoded);
 
-	return redirect()->route('barang.index')
-	    ->with('success', 'Barang berhasil ditambahkan!')
-	    ->with('status_token', $barang->status_token)
-	    ->with('no_wa',$barang->no_wa);
-
+        // Simpan path relatif untuk database
+        $data['gambar'] = 'barang/webp/' . $filename;
     }
+
+    // Buat record baru
+    $barang = Barang::create($data);
+
+    return redirect()->route('barang.index')
+                     ->with('success', 'Barang berhasil ditambahkan!')
+                     ->with('status_token', $barang->status_token)
+                     ->with('no_wa', $barang->no_wa);
+}
+
 
     // Tampilkan detail barang
     public function show($slug)
@@ -82,12 +110,12 @@ class BarangController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'judul'               => 'required|string|max:255',
-            'deskripsi'           => 'required',
-            'kategori_id'         => 'required|exists:kategoris,id',
-            'lokasi_id'           => 'required|exists:lokasis,id',
-            'gambar'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'alamat_pengambilan'  => 'nullable|string|max:255',
+            'judul'              => 'required|string|max:255',
+            'deskripsi'          => 'required',
+            'kategori_id'        => 'required|exists:kategoris,id',
+            'lokasi_id'          => 'required|exists:lokasis,id',
+            'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'alamat_pengambilan' => 'nullable|string|max:255',
         ]);
 
         $barang = Barang::findOrFail($id);
@@ -97,7 +125,6 @@ class BarangController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-            // hapus file lama jika ada
             if ($barang->gambar && Storage::disk('public')->exists($barang->gambar)) {
                 Storage::disk('public')->delete($barang->gambar);
             }
@@ -129,10 +156,9 @@ class BarangController extends Controller
         $barang->status = 'sudah diambil';
         $barang->save();
 
-            // Redirect ke halaman detail barang yang baru di‐update
         return redirect()
-           ->route('barang.show', $barang->slug)
-           ->with('success', 'Status barang berhasil di‐update!');
+               ->route('barang.show', $barang->slug)
+               ->with('success', 'Status barang berhasil di‐update!');
     }
 
     // Detail barang berdasarkan kategori (slug)
