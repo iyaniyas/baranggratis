@@ -52,11 +52,11 @@
 @section('content')
     <!-- Judul utama -->
     <h1 class="mb-4 text-center">
-        BarangGratis.com: Temukan &amp; Bagikan Barang Bekas Gratis di Indonesia
+        Temukan &amp; Bagikan Barang Bekas Gratis di Indonesia
     </h1>
 
     <!-- Bagian kenapa BarangGratis -->
-    <div class="p-4 mb-5 bg-secondary text-light rounded text-center">
+    <div class="p-4 card text-light rounded text-center">
         <h2 class="h4 mb-3">Kenapa BarangGratis?</h2>
         <p class="mb-1"><strong>Kurangi Sampah:</strong> Berikan apa yang tidak lagi Anda butuhkan.</p>
         <p class="mb-1"><strong>Hemat Uang:</strong> Dapatkan apa yang Anda inginkan secara gratis.</p>
