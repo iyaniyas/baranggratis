@@ -91,16 +91,16 @@
         </form>
     </div>
 
-    <!-- Tampilkan cuplikan 3 barang terbaru -->
+    <!-- Tampilkan cuplikan 6 barang terbaru -->
     @if($barangs->count())
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @foreach($barangs->take(3) as $barang)
+        <div class="row row-cols-6 g-4">
+            @foreach($barangs->take(6) as $barang)
                 <div class="col">
                     <div class="card h-100 bg-dark text-light border-0 shadow-sm">
                         @if($barang->gambar)
-                            <img src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->judul }}" class="card-img-top img-fluid img-thumbnail" fetchpriority="high" style="object-fit: cover; height: 200px;">
+                            <img src="{{ asset('storage/' . $barang->gambar) }}" fetchpriority="high" style="object-fit: cover; width: 200px; height: 200px;">
                         @else
-                            <img src="{{ asset('no-image.jpg') }}" alt="No Image" class="card-img-top img-fluid img-thumbnail" fetchpriority="high" style="object-fit: cover; height: 200px;">
+                            <img src="{{ asset('no-image.jpg') }}" fetchpriority="high" style="object-fit: cover; width: 200px; height: 200px;">
                         @endif
 
                         <div class="card-body">
@@ -109,25 +109,7 @@
                             </h3>
 
                             <p class="text-light mb-1">
-                                Kategori:
-                                @if($barang->kategori)
-                                    <a href="{{ route('kategori.show', $barang->kategori->slug) }}" class="link-light text-decoration-none">{{ $barang->kategori->nama }}</a>
-                                @else
-                                    -
-                                @endif
-                            </p>
-
-                            <p class="text-light mb-1">
-                                Lokasi:
-                                @if($barang->lokasi)
-                                    <a href="{{ route('lokasi.show', $barang->lokasi->slug) }}" class="link-light text-decoration-none">{{ $barang->lokasi->nama }}</a>
-                                @else
-                                    -
-                                @endif
-                            </p>
-
-                            {{-- Status: tampilkan badge hijau bila tersedia, dan teks biasa bila sudah diambil --}}
-                            <p class="{{ $barang->status === 'tersedia' ? 'fw-bold px-2 py-1 rounded bg-success text-dark' : 'text-light fw-bold' }}">
+                                Kategori: {{ $barang->kategori->nama }} | Lokasi: {{ $barang->lokasi->nama }} |
                                 {{ $barang->status === 'tersedia' ? 'Tersedia' : 'Sudah Diambil' }}
                             </p>
 

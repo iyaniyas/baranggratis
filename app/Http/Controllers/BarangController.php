@@ -35,7 +35,7 @@ class BarangController extends Controller
         'deskripsi'           => 'required',
         'kategori_id'         => 'required|exists:kategoris,id',
         'lokasi_id'           => 'required|exists:lokasis,id',
-        'gambar'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'gambar'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10480',
         'alamat_pengambilan'  => 'nullable|string|max:255',
         'no_wa'               => 'required|digits_between:10,15',
     ]);
@@ -61,10 +61,10 @@ class BarangController extends Controller
 
         // Baca dan skala proporsional (lebar max 1024px)
         $image = Image::read($imgFile)
-            ->scaleDown(width: 1024);
+            ->scaleDown(width: 300);
 
         // Encode ke WebP (kualitas 90)
-        $encoded = $image->encodeByExtension('webp', quality: 90);
+        $encoded = $image->encodeByExtension('webp', quality: 50);
 
         // Pastikan folder 'public/barang/webp' ada
         if (! Storage::exists('public/barang/webp')) {
