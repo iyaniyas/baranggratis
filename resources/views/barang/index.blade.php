@@ -125,13 +125,14 @@
                 onclick="this.select()"
             >
             @if(session('no_wa'))
-                <a
-                    href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode('Klik link apabila barang sudah diambil orang: ' . url('barang/update-status/' . session('status_token'))) }}"
-                    target="_blank"
-                    class="btn btn-success btn-sm"
-                >
-                    Simpan di WhatsApp Anda
-                </a>
+                <a 
+		    href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode('Klik link apabila ' . $barang->judul . ' sudah diambil: ' . url('barang/update-status/' . session('status_token'))) }}"
+		    target="_blank"
+		    class="btn btn-success btn-sm"
+		>
+		    Simpan di WhatsApp Anda
+		</a>
+
             @endif
         </div>
     @endif

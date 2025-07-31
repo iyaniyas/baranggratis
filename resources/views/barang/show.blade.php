@@ -4,11 +4,11 @@
     use Illuminate\Support\Str;
     use Carbon\Carbon;
 
-    $timestamp      = Carbon::parse($barang->created_at)->format('Y-m-d');
-    $judulLengkap   = $barang->judul . ' - ' . $timestamp;
-    $deskripsiRingkas = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
-    $gambarUrl      = $barang->gambar
-                        ? asset('storage/'.$barang->gambar)
+    $timestamp         = Carbon::parse($barang->created_at)->format('Y-m-d H:i');
+    $judulLengkap      = $barang->judul . ' - ' . $timestamp;
+    $deskripsiRingkas  = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
+    $gambarUrl         = $barang->gambar
+                        ? asset('storage/' . $barang->gambar)
                         : asset('no-image.jpg');
 @endphp
 
@@ -37,16 +37,12 @@
             <div class="card shadow-lg border-0 overflow-hidden mb-4">
                 <div class="row g-0">
                     @if($gambarUrl)
-                        <!--
-                            Gambar ditempatkan di kolom tersendiri agar tampil sebagai
-                            thumbnail. Dengan class img-fluid serta penambahan style
-                            object-fit: cover, gambar akan memenuhi kolom dan tetap
-                            terpotong rapi.
-                        -->
                         <div class="col-md-5">
-                            <img src="{{ $gambarUrl }}" alt="{{ $barang->judul }}"
+                            <img src="{{ $gambarUrl }}"
+                                 alt="{{ $barang->judul }}"
                                  class="img-fluid h-100 w-100"
-                                 style="object-fit: cover;">
+                                 style="object-fit: cover;"
+                                 width="200" height="200" fetchpriority="high">
                         </div>
                     @endif
                     <div class="col-md-7">
@@ -59,15 +55,10 @@
                             <p><strong>Status:</strong> {{ ucfirst($barang->status) }}</p>
 
                             @if($barang->status === 'tersedia')
-                                <!--
-                                    Saat barang masih tersedia, tampilkan tombol klaim via
-                                    WhatsApp untuk calon penerima dan tombol "Tandai Sudah
-                                    Diambil" untuk pemilik. Pesan WA diisi otomatis dengan
-                                    judul barang untuk memudahkan komunikasi.
-                                -->
                                 <div class="mt-4 d-flex flex-wrap align-items-center gap-2">
                                     <a href="https://wa.me/{{ $barang->no_wa }}?text={{ urlencode('Halo, saya tertarik dengan barang ' . $barang->judul) }}"
-                                       target="_blank" class="btn btn-success">
+                                       target="_blank"
+                                       class="btn btn-light text-dark">
                                         Klaim Barang via WhatsApp
                                     </a>
                                 </div>
@@ -76,9 +67,30 @@
                     </div>
                 </div>
             </div>
+
+            @if(isset($related) && $related->count())
+            <div class="mb-4">
+                <h3>Barang Lain di sini:</h3>
+                <div class="row">
+                    @foreach($related as $item)
+                        <div class="col-2">
+                            <a href="{{ route('barang.show', $item->slug) }}">
+                                <img src="{{ asset('storage/' . $item->gambar) }}"
+                                     alt="{{ $item->judul }}"
+                                     class="img-fluid"
+                                     style="object-fit: cover;"
+                                     width="200" height="200" fetchpriority="high">
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
         </div>
     </div>
 </div>
+
     @php
         // Data Schema.org Product ditambahkan di dalam konten agar mudah
         // dideteksi oleh mesin pencari. Nilai price selalu 0 karena semua
@@ -111,5 +123,3 @@
         {!! json_encode($schemaData, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
     </script>
 @endsection
-
-

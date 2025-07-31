@@ -94,7 +94,14 @@ class BarangController extends Controller
         $barang = Barang::with(['kategori', 'lokasi'])
                         ->where('slug', $slug)
                         ->firstOrFail();
-        return view('barang.show', compact('barang'));
+		
+        $related = Barang::where('lokasi_id', $barang->lokasi_id)
+                         ->where('id', '<>', $barang->id)
+                         ->latest()
+                         ->take(6)
+                         ->get();
+
+        return view('barang.show', compact('barang', 'related'));		
     }
 
     // Form edit barang

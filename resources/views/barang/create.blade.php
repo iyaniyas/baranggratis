@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
+@section('meta_title', 'Berbagi Barang Gratis | BarangGratis.com')
+@section('meta_description', 'Tambahkan barang gratis yang tidak terpakai dan bantu orang lain yang membutuhkan. Mudah, cepat, dan tanpa biaya di BarangGratis.com. Isi data barang, upload gambar, dan bagikan lokasi pengambilan.')
+
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card bg-dark text-light">
                 <div class="card-header">
-                    <h4>Tambah Barang</h4>
+                    <h2>Berbagi Barang Gratis</h2>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
