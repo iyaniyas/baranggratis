@@ -114,7 +114,7 @@ class BarangController extends Controller
             'deskripsi'          => 'required',
             'kategori_id'        => 'required|exists:kategoris,id',
             'lokasi_id'          => 'required|exists:lokasis,id',
-            'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'alamat_pengambilan' => 'nullable|string|max:255',
         ]);
 
