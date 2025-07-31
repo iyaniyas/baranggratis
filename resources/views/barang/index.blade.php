@@ -114,28 +114,45 @@
     @endif
 
     {{-- Link update-status sekali saja --}}
-    @if(session('status_token'))
-        <div class="alert alert-info text-dark">
-            <label><strong>Klik tombol Simpan di WhatsApp Anda untuk menyimpan link. Buka link ini apabila barang sudah diambil orang.</strong></label>
-            <input
-                type="text"
-                class="form-control mb-2"
-                value="{{ url('barang/update-status/' . session('status_token')) }}"
-                readonly
-                onclick="this.select()"
-            >
-            @if(session('no_wa'))
-                <a 
-		    href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode('Klik link apabila ' . $barang->judul . ' sudah diambil: ' . url('barang/update-status/' . session('status_token'))) }}"
-		    target="_blank"
-		    class="btn btn-success btn-sm"
-		>
-		    Simpan di WhatsApp Anda
-		</a>
+{{-- resources/views/barang/index.blade.php –– bagian Link konfirmasi --}}
+@if(session('status_token'))
+    @php
+        $barangBaru = \App\Models\Barang::where('status_token', session('status_token'))
+                                        ->latest()
+                                        ->first();
+    @endphp
+    <div class="alert alert-info text-dark">
+        <label><strong>
+            Klik tombol Simpan di WhatsApp Anda untuk menyimpan link.<br>
+            Buka link ini apabila
+            <span class="text-primary fw-bold">
+                {{ $barangBaru ? strtolower($barangBaru->judul) : 'barang' }}
+            </span>
+            sudah diambil orang.
+        </strong></label>
 
-            @endif
-        </div>
-    @endif
+        <input
+            type="text"
+            class="form-control mb-2"
+            value="{{ route('barang.confirm', session('status_token')) }}"
+            readonly
+            onclick="this.select()"
+        />
+
+        <a
+            href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode(
+                'Klik link konfirmasi pengambilan: ' 
+                . $barangBaru->judul 
+                . ' sudah diambil: ' 
+                . route('barang.confirm', session('status_token'))
+            ) }}"
+            target="_blank"
+            class="btn btn-success btn-sm"
+        >
+            Simpan di WhatsApp Anda
+        </a>
+    </div>
+@endif
 
     @if($barangs->count())
         <div class="row">

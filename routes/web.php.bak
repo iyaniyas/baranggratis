@@ -60,7 +60,7 @@ Route::post('/barang/{slug}/status', [BarangController::class, 'updateStatus'])-
 Route::post('/barang/{slug}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
 
 // Update status by token (khusus)
-//Route::get('/barang/update-status/{token}', [BarangController::class, 'updateStatusByToken'])->name('barang.updateStatusByToken');
+Route::get('/barang/update-status/{token}', [BarangController::class, 'updateStatusByToken'])->name('barang.updateStatusByToken');
 
 // Dashboard (static)
 Route::get('/dashboard', function () {
@@ -75,10 +75,4 @@ Route::get('/robots.txt', function () {
 
 // Sitemap.xml dinamis
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
-
-//routes confirmasi
-Route::get('/claim/{token}', [BarangController::class, 'confirmClaim'])
-     ->name('barang.confirm');
-Route::post('/claim/{token}', [BarangController::class, 'claim'])
-     ->name('barang.claim');
 
