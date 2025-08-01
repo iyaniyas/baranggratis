@@ -81,4 +81,10 @@ Route::get('/claim/{token}', [BarangController::class, 'confirmClaim'])
      ->name('barang.confirm');
 Route::post('/claim/{token}', [BarangController::class, 'claim'])
      ->name('barang.claim');
+//routes static page
+Route::view('/tentang-kami', 'static.tentang');
+Route::view('/pedoman', 'static.pedoman');
+Route::view('/keanekaragaman', 'static.keanekaragaman');
+Route::view('/keamanan', 'static.keamanan');
+Route::view('/tos', 'static.tos');
 

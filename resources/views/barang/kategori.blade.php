@@ -1,4 +1,3 @@
-{{-- resources/views/barang/kategori.blade.php --}}
 @extends('layouts.app')
 
 @section('meta_title', 'Barang Gratis Kategori ' . $kategori->nama . ' | BarangGratis.com')
@@ -21,7 +20,7 @@
                                 {{ \Illuminate\Support\Str::limit($barang->deskripsi, 100) }}
                             </p>
                             <span class="badge bg-secondary mb-2">{{ $barang->lokasi->nama ?? '-' }}</span><br>
-                            <a href="{{ route('barang.show', $barang->id) }}" class="btn btn-primary btn-sm mt-2">Lihat Detail</a>
+                            <a href="{{ route('barang.show', $barang->slug) }}" class="btn btn-primary btn-sm mt-2">Lihat Detail</a>
                         </div>
                     </div>
                 </div>
