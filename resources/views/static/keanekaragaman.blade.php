@@ -10,7 +10,7 @@
 
   <h2>1. Semua Orang Selamat Datang</h2>
   <ul>
-    <li>Tak peduli ras, etnis, suku, agama, gender, orientasi seksual, disabilitas, status ekonomi, atau umur, semua anggota diberi ruang untuk memberi dan meminta secara sama.</li>
+    <li>Tak peduli ras, etnis, suku, agama, gender, disabilitas, status ekonomi, atau umur, semua anggota diberi ruang untuk memberi dan meminta secara sama.</li>
     <li>Kami menyambut berbagai cara berkomunikasi: bahasa formal maupun informal, teks panjang, singkat, serta singkatan atau emoji—selama tetap sopan dan ramah. :contentReference[oaicite:1]{index=1}</li>
   </ul>
 

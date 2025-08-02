@@ -2,6 +2,20 @@
 
 @section('meta_title', 'Syarat & Ketentuan')
 
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const user = "kontak";
+    const domain = "baranggratis.com";
+    const email = user + "@" + domain;
+    const emailEl = document.getElementById("email");
+    if (emailEl) {
+      emailEl.textContent = email;
+    }
+  });
+</script>
+@endpush
+
 @section('content')
 <div class="container py-4">
   <h1>Syarat &amp; Ketentuan</h1>

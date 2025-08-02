@@ -43,7 +43,7 @@
   <p>Kami melarang keras perilaku predatory terhadap anak-anak. Termasuk interaksi tidak pantas, grooming, eksploitasi seksual, sextortion, atau perdagangan anak dalam bentuk apapun. Pelanggaran akan ditindak sesuai hukum berlaku. :contentReference[oaicite:1]{index=1}</p>
 
   <h2>8. Ringkasan Panduan Internasional</h2>
-  <p>Berdasarkan prinsip komunitas Buy Nothing, kami menganjurkan praktik aman seperti “Participate at your own risk”, menjaga privasi, membangun kepercayaan, dan menolak segala bentuk intimidasi, spam, atau eksploitasi. :contentReference[oaicite:2]{index=2}</p>
+  <p>Berdasarkan prinsip komunitas, kami menganjurkan praktik aman seperti “Participate at your own risk”, menjaga privasi, membangun kepercayaan, dan menolak segala bentuk intimidasi, spam, atau eksploitasi. :contentReference[oaicite:2]{index=2}</p>
 
   <h2>9. Tips Tambahan</h2>
   <ul>

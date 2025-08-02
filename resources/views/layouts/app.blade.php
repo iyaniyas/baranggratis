@@ -66,18 +66,8 @@
     <!-- 4. Local Bootstrap JS (defer agar tidak blok render) -->
   <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
 
-<script>
-  (function(){
-    // Bagian terenkripsi atau digeser
-    const user = "kontak";
-    const domain = "baranggratis.com";
-    const email = user + "@" + domain;
-    const emailEl = document.getElementById("email");
-    emailEl.textContent = email;
-  })();
-</script>
-
-    @include('layouts.footer')
+  @include('layouts.footer')
+  @stack('scripts')
 </body>
 </html>
 
