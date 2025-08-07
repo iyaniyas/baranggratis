@@ -157,7 +157,7 @@
 <!-- Tampilkan cuplikan 6 barang terbaru -->
     @if($barangs->count())
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
-        @foreach($barangs->take(6) as $barang)
+        @foreach($barangs as $barang)
             <div class="col">
                 <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
                     @if($barang->gambar)

@@ -5,7 +5,7 @@
         <span class="text-warning">BARANG</span>&nbsp;<span class="text-light">GRATIS</span>
       </a>
     </h1>
-    <a class="btn btn-warning text-dark ms-auto" href="{{ route('barang.create') }}">
+    <a class="btn btn-warning text-dark" href="{{ route('barang.create') }}">
       + Berbagi
     </a>
   </div>
