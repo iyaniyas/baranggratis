@@ -15,38 +15,38 @@
     <!-- Judul utama -->
     <h2 class="mb-3 text-center fs-4">
         Temukan &amp; Bagikan Barang Gratis
-    </h1>
+    </h2>
 
     <!-- Bagian kenapa BarangGratis -->
     <div id="kenapaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner text-center text-light bg-dark p-5 rounded">
-    <div class="carousel-item active">
-      <h3 class="h4">Kurangi Sampah</h3>
-      <p>Berikan apa yang tidak lagi Anda butuhkan.</p>
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner text-center text-light bg-dark p-5 rounded">
+            <div class="carousel-item active">
+                <h3 class="h4">Kurangi Sampah</h3>
+                <p>Berikan apa yang tidak lagi Anda butuhkan.</p>
+            </div>
+            <div class="carousel-item">
+                <h3 class="h4">Hemat Uang</h3>
+                <p>Dapatkan apa yang Anda inginkan secara gratis.</p>
+            </div>
+            <div class="carousel-item">
+                <h3 class="h4">Bangun Komunitas</h3>
+                <p>Bertemu tetangga, berbagi secara kreatif.</p>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#kenapaCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Sebelumnya</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#kenapaCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Berikutnya</span>
+        </button>
     </div>
-    <div class="carousel-item">
-      <h3 class="h4">Hemat Uang</h3>
-      <p>Dapatkan apa yang Anda inginkan secara gratis.</p>
-    </div>
-    <div class="carousel-item">
-      <h3 class="h4">Bangun Komunitas</h3>
-      <p>Bertemu tetangga, berbagi secara kreatif.</p>
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#kenapaCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Sebelumnya</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#kenapaCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Berikutnya</span>
-  </button>
-</div>
 
     <!-- Panduan cara kerja -->
     <div class="mb-5">
@@ -115,40 +115,43 @@
 
     <!-- Tampilkan cuplikan 6 barang terbaru -->
     @if($barangs->count())
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
-        @foreach($barangs->take(6) as $barang)
-            <div class="col">
-                <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
-                    @if($barang->gambar)
-                        <img src="{{ asset('storage/' . $barang->gambar) }}"
-                             fetchpriority="high"
-			     alt="Foto {{ $barang->judul }}"  {{-- deskripsi singkat --}}
-                             class="mx-auto"
-                             style="object-fit: cover; width: 200px; height: 150px;">
-                    @else
-                        <img src="{{ asset('no-image.jpg') }}"
-                             fetchpriority="high"
-			     alt="Tidak Ada Foto"
-                             class="mx-auto"
-                             style="object-fit: cover; width: 200px; height: 150px;">
-                    @endif
-
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h7 class="card-title h5 mb-2">
-                            <a href="{{ route('barang.show', $barang->slug) }}"
-                               class="link-light text-decoration-none">
-                                {{ $barang->judul }}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
+            @foreach($barangs->take(6) as $barang)
+                <div class="col">
+                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
+                        @if($barang->gambar)
+                            <a href="{{ route('barang.show', $barang->slug) }}">
+                                <img src="{{ asset('storage/' . $barang->gambar) }}"
+                                     fetchpriority="high"
+                                     alt="Foto {{ $barang->judul }}"
+                                     class="mx-auto"
+                                     style="object-fit: cover; width: 200px; height: 150px;">
                             </a>
-                        </h7>
-                        <p class="text-light small mb-0">
-                            Lokasi: {{ $barang->lokasi->nama }}
-                        </p>
+                        @else
+                            <a href="{{ route('barang.show', $barang->slug) }}">
+                                <img src="{{ asset('no-image.jpg') }}"
+                                     fetchpriority="high"
+                                     alt="Tidak Ada Foto"
+                                     class="mx-auto"
+                                     style="object-fit: cover; width: 200px; height: 150px;">
+                            </a>
+                        @endif
+
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h7 class="card-title h5 mb-2">
+                                <a href="{{ route('barang.show', $barang->slug) }}"
+                                   class="link-light text-decoration-none">
+                                    {{ $barang->judul }}
+                                </a>
+                            </h7>
+                            <p class="text-light small mb-0">
+                                Lokasi: {{ $barang->lokasi->nama }}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-
+            @endforeach
+        </div>
 
         <div class="text-center mt-4 p-4 bg-dark rounded">
             <a href="/barang" class="btn btn-lg btn-light text-dark fw-bold">Lihat Semua Barang Gratis</a>
@@ -157,5 +160,4 @@
         <div class="alert alert-info">Tidak ada barang ditemukan.</div>
     @endif
 @endsection
-
 

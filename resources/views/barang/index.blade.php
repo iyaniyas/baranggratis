@@ -161,18 +161,23 @@
             <div class="col">
                 <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
                     @if($barang->gambar)
-                        <img src="{{ asset('storage/' . $barang->gambar) }}"
-                             fetchpriority="high"
-			     alt="Foto {{ $barang->judul }}"  {{-- deskripsi singkat --}}
-                             class="mx-auto"
-                             style="object-fit: cover; width: 200px; height: 150px;">
-                    @else
-                        <img src="{{ asset('no-image.jpg') }}"
-                             fetchpriority="high"
-			     alt="Tidak Ada Foto"
-                             class="mx-auto"
-                             style="object-fit: cover; width: 200px; height: 150px;">
-                    @endif
+    <a href="{{ route('barang.show', $barang->slug) }}">
+        <img src="{{ asset('storage/' . $barang->gambar) }}"
+             fetchpriority="high"
+             alt="Foto {{ $barang->judul }}"
+             class="mx-auto"
+             style="object-fit: cover; width: 200px; height: 150px;">
+    </a>
+@else
+    <a href="{{ route('barang.show', $barang->slug) }}">
+        <img src="{{ asset('no-image.jpg') }}"
+             fetchpriority="high"
+             alt="Tidak Ada Foto"
+             class="mx-auto"
+             style="object-fit: cover; width: 200px; height: 150px;">
+    </a>
+@endif
+
 
                     <div class="card-body d-flex flex-column justify-content-center">
                         <h7 class="card-title h5 mb-2">
