@@ -1,61 +1,56 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tentang **BarangGratis.com**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**BarangGratis.com** adalah platform komunitas ekonomi pemberian lokal di Indonesia, yang memungkinkan siapa saja untuk **memberi, menerima, meminjam, atau mengungkapkan rasa terima kasih—tanpa imbalan finansial** :contentReference[oaicite:1]{index=1}.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+##  Visi
+Membangun komunitas yang **tangguh**, **berkelanjutan**, **inklusif**, dan penuh kebersamaan—di mana setiap orang bisa memberi dan menerima secara sukarela tanpa ada yang dirugikan :contentReference[oaicite:2]{index=2}.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##  Misi
+- Mendorong praktik berbagi lokal yang **gratis** dan **saling menguntungkan**.
+- Mengurangi limbah dan konsumsi berlebihan dengan mendorong pemberian kembali atau penggunaan ulang barang.
+- Membangun **kepercayaan** antar anggota komunitas dengan dijalankannya nilai kejujuran, rasa hormat, dan empati.
+- Mengedepankan **inklusivitas**, tanpa diskriminasi latar belakang, usia, atau kondisi.
+- Mendukung terbentuknya **hubungan sosial yang berkelanjutan**—tetangga menjadi teman, serta terbentuk jejaring sosial lewat kegiatan berbagi :contentReference[oaicite:3]{index=3}.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+##  Nilai Komunitas
+- **Abundance Mindset** – Berasal dari kelimpahan, bukan kekurangan.
+- **Komunitas Lokal** – Lingkup yang hyper-lokal memudahkan interaksi dan membangun relasi personal.
+- **Keadilan & Transparansi** – Semua posting bersifat sukarela dan terbuka, bukan jual-beli, dengan niatan pemberian yang jujur.
+- **Kesetaraan** – Setiap bentuk kontribusi—barang digital, barang layak pakai, waktu, atau layanan—dihargai sama, karena yang utama adalah kehadiran manusianya.
+- **Inklusif** – Menyambut semua orang tanpa memandang agama, nilai, disabilitas, atau usia.
+- **Keberlanjutan** – Membantu mengurangi sampah dan memperpanjang siklus hidup barang :contentReference[oaicite:4]{index=4}.
 
-## Learning Laravel
+##  Latar Belakang
+Banyak barang layak pakai seringkali dibiarkan teronggok atau dibuang begitu saja. Dengan semangat **gotong-royong**, BarangGratis.com menyediakan wadah digital untuk menyatukan pemberi dan penerima—berbasis niat berbagi, tanpa transaksi jual-beli :contentReference[oaicite:5]{index=5}.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+##  Cara Kerja Platform
+1. Pemilik mengunggah detail serta foto barang yang ingin dibagikan.
+2. Pencari menghubungi pemilik via WhatsApp untuk klaim.
+3. Pencari datang ke lokasi dan mengambil barang.
+4. Selesai—barang berpindah tangan dengan senang hati semua pihak :contentReference[oaicite:6]{index=6}.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+##  Model Pendanaan
+- **Iklan** di situs untuk mendanai server, pengembangan, dan layanan.
+- **Donasi sukarela** dari pengguna—tanpa syarat, sebagai bentuk dukungan keberlanjutan.
+- Tidak ada biaya posting, biaya transaksi, atau komisi atas barang yang dibagikan :contentReference[oaicite:7]{index=7}.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+##  Dampak Positif
+- Membantu masyarakat lokal mendapatkan barang bekas layak pakai **secara gratis**.
+- Mengurangi sampah rumah tangga dengan memperpanjang siklus hidup barang.
+- Meningkatkan solidaritas antar warga—tetangga saling mengenal dan membantu.
+- Memberi kesempatan bagi keluarga atau individu dengan keterbatasan ekonomi untuk mendapatkan kebutuhan **tanpa beban biaya** :contentReference[oaicite:8]{index=8}.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Bergabunglah Bersama Kami!
+Kami mengundang Anda untuk menjadi bagian dari **komunitas berbagi** yang hangat dan berbasis niat baik. Anda bisa:
 
-### Premium Partners
+- **Mem-posting barang** yang ingin dibagikan.
+- **Mencari barang** yang Anda butuhkan.
+- Atau sekadar mengekspresikan rasa syukur atas keberadaan komunitas ini.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Semua kegiatan dilakukan dengan **niat tulus**, **keadilan**, dan **tanggung jawab** sebagai sesama tetangga.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+© 2025 <a href="https://www.baranggratis.com/">BarangGratis.com</a>
