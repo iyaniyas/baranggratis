@@ -25,7 +25,6 @@
     <!-- SEO Meta Tags -->
     <title>@yield('meta_title', 'BarangGratis.com')</title>
     <meta name="description" content="@yield('meta_description', 'Cari & bagikan barang bekas, gratis, second, furniture, elektronik, mainan, baju, perlengkapan rumah & lainnya. Semua gratis')">
-    <meta name="keywords" content="@yield('meta_keywords', 'barang gratis, barang bekas, donate, share, komunitas')">
 
     <!-- Open Graph / Facebook -->
 <meta property="og:type" content="@yield('og_type','website')">

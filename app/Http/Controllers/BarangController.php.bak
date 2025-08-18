@@ -157,16 +157,16 @@ class BarangController extends Controller
     }
 
     // Update status by token (link khusus tanpa login)
-    public function updateStatusByToken($token)
-    {
-        $barang = Barang::where('status_token', $token)->firstOrFail();
-        $barang->status = 'sudah diambil';
-        $barang->save();
-
-        return redirect()
-               ->route('barang.show', $barang->slug)
-               ->with('success', 'Status barang berhasil di‐update!');
-    }
+   // public function updateStatusByToken($token)
+   // {
+   //     $barang = Barang::where('status_token', $token)->firstOrFail();
+    //    $barang->status = 'sudah diambil';
+    //    $barang->save();
+//
+//        return redirect()
+ //              ->route('barang.show', $barang->slug)
+//               ->with('success', 'Status barang berhasil di‐update!');
+//    }
 
     // Detail barang berdasarkan kategori (slug)
     public function kategori($slug)
@@ -183,5 +183,29 @@ class BarangController extends Controller
         $barangs = Barang::where('lokasi_id', $lokasi->id)->latest()->paginate(10);
         return view('barang.lokasi', compact('lokasi', 'barangs'));
     }
+
+    //fungsi klaim
+    public function confirmClaim($token)
+{
+    // Ambil data barang berdasarkan token, atau 404 jika tidak ada
+    $barang = Barang::where('status_token', $token)
+                    ->firstOrFail();
+    return view('barang.confirm', compact('barang'));
+}
+
+public function claim(Request $request, $token)
+{
+    // Validasi CSRF (otomatis lewat middleware)
+    // Ambil barang, ubah status, lalu simpan
+    $barang = Barang::where('status_token', $token)
+                    ->firstOrFail();  // firstOrFail mempermudah error handling :contentReference[oaicite:5]{index=5}
+    $barang->status = 'sudah diambil';
+    $barang->save();      // save() akan commit perubahan ke DB :contentReference[oaicite:6]{index=6}
+
+    // Redirect ke halaman detail
+    return redirect()->route('barang.show', $barang->slug)
+                 ->with('success', 'Barang berhasil diklaim!');
+}
+    
 }
 

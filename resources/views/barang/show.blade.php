@@ -5,8 +5,8 @@
     use Carbon\Carbon;
 
     $timestamp         = Carbon::parse($barang->created_at)->format('Y-m-d H:i');
-    $judulLengkap      = $barang->judul . ' - ' . $timestamp;
-    $deskripsiRingkas  = $barang->judul . ' - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
+    $judulLengkap = $barang->judul . ' Gratis - ' . $timestamp;
+    $deskripsiRingkas = $barang->judul . ' Gratis - ' . $timestamp . ' - ' . Str::limit(strip_tags($barang->deskripsi), 150);
     $gambarUrl         = $barang->gambar
                         ? asset('storage/' . $barang->gambar)
                         : asset('no-image.jpg');

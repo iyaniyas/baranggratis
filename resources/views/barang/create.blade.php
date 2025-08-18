@@ -25,11 +25,11 @@
 			  <input type="text"
 			         name="no_wa"
 			         class="form-control"
-			         placeholder="6281234567890"
+			         placeholder="0822000000"
 			         value="{{ old('no_wa') }}"
 			         required>
 				  <small class="form-text text-light">
-				  Masukkan nomor WA tanpa “+” atau “0” di depan (contoh: 6281234567890).
+				  Masukkan nomor WA
 				  </small>
 			</div>
 	
