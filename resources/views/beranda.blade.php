@@ -13,12 +13,12 @@
 
 @section('content')
     <!-- Judul utama -->
-    <h2 class="mb-3 text-center fs-4">
+    <h2 class="mb-3 text-center fs-4 text-light">
         Temukan &amp; Bagikan Barang Gratis
     </h2>
 
     <!-- Bagian kenapa BarangGratis -->
-    <div id="kenapaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
+    <div id="kenapaCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-pause="hover">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -50,7 +50,7 @@
 
     <!-- Panduan cara kerja -->
     <div class="mb-5">
-        <h4 class="h4 text-center mb-4">Cara Kerja BarangGratis.com</h4>
+        <h4 class="h4 text-center mb-4 text-light">Cara Kerja BarangGratis.com</h4>
         <div class="row text-center g-4">
             <div class="col-md-3">
                 <div class="card h-100 border-0 shadow-sm">
@@ -100,7 +100,6 @@
                 <select id="lokasiSelect" name="lokasi" class="form-select" aria-label="Filter lokasi">
                     <option value="">Semua Lokasi</option>
                     @foreach($lokasiList as $lokasi)
-                        <!-- gunakan slug sebagai value agar URL tetap konsisten -->
                         <option value="{{ $lokasi->slug }}" {{ request('lokasi') == $lokasi->slug ? 'selected' : '' }}>
                             {{ $lokasi->nama }}
                         </option>
@@ -118,7 +117,8 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
             @foreach($barangs->take(6) as $barang)
                 <div class="col">
-                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
+                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center position-relative">
+                        {{-- Gambar --}}
                         @if($barang->gambar)
                             <a href="{{ route('barang.show', $barang->slug) }}">
                                 <img src="{{ asset('storage/' . $barang->gambar) }}"
@@ -136,6 +136,24 @@
                                      style="object-fit: cover; width: 200px; height: 150px;">
                             </a>
                         @endif
+
+                        {{-- Badge Permintaan --}}
+                        @if($barang->is_request)
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                                Permintaan
+                            </span>
+                        @endif
+
+                        {{-- Badge Status --}}
+                        <span class="badge 
+                            @if($barang->status === 'tersedia') bg-success
+                            @elseif($barang->status === 'sudah diambil') bg-secondary
+                            @elseif($barang->status === 'sudah didapatkan') bg-warning text-dark
+                            @else bg-light text-dark
+                            @endif
+                            position-absolute top-0 end-0 m-2">
+                            {{ ucfirst($barang->status) }}
+                        </span>
 
                         <div class="card-body d-flex flex-column justify-content-center">
                             <h7 class="card-title h5 mb-2">

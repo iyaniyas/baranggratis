@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BarangAdminController;
 
 //admin
+//admin
 Route::prefix('admin')->group(function () {
     Route::get('/barang', function(Request $request) {
         if ($request->input('token') !== '9)mJ.7Ye3ZDgSri') abort(403, 'Unauthorized');
@@ -25,9 +26,11 @@ Route::prefix('admin')->group(function () {
 
     Route::delete('/barang/{id}', function(Request $request, $id) {
         if ($request->input('token') !== '9)mJ.7Ye3ZDgSri') abort(403, 'Unauthorized');
-        return app(BarangAdminController::class)->destroy($id);
+        // Kirim $request juga supaya destroy bisa membaca token
+        return app(BarangAdminController::class)->destroy($request, $id);
     })->name('admin.barang.destroy');
 });
+
 
 // Beranda dengan filter, search, dan paginasi
 Route::get('/', function (Request $request) {
@@ -113,3 +116,9 @@ Route::view('/keanekaragaman', 'static.keanekaragaman');
 Route::view('/keamanan', 'static.keamanan');
 Route::view('/tos', 'static.tos');
 
+// Route untuk permintaan barang
+Route::get('/permintaan', [BarangController::class, 'listRequests'])->name('barang.requests.list');
+Route::get('/permintaan/tambah', [BarangController::class, 'createRequest'])->name('barang.requests.create');
+Route::post('/permintaan/tambah', [BarangController::class, 'storeRequest'])->name('barang.requests.store');
+Route::get('/permintaan/konfirmasi/{token}', [BarangController::class, 'confirmRequest'])->name('barang.requests.confirm');
+Route::post('/permintaan/klaim/{token}', [BarangController::class, 'claimRequest'])->name('barang.requests.claim');

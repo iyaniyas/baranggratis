@@ -279,5 +279,150 @@ class BarangController extends Controller
             ->route('barang.show', $barang->slug)
             ->with('success', 'Barang berhasil diklaim!');
     }
+
+    // =============================
+    // REQUEST BARANG (MEMINTA BARANG) - TANPA AUTH
+    // =============================
+
+    /**
+     * Menampilkan form untuk membuat permintaan barang baru
+     */
+    public function createRequest()
+    {
+        $kategoris = Kategori::all();
+        $lokasis = Lokasi::all();
+        return view('barang.request.create', compact('kategoris', 'lokasis'));
+    }
+
+    /**
+     * Menyimpan permintaan barang baru (langsung approve) dengan token konfirmasi
+     */
+    public function storeRequest(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10480',
+            'no_wa' => ['required', 'string', 'min:9', 'max:20'],
+            'jumlah_diminta' => 'required|integer|min:1',
+        ]);
+
+        // Ambil input dasar
+        $data = $request->only([
+            'judul',
+            'deskripsi',
+            'kategori_id',
+            'lokasi_id',
+            'no_wa',
+            'jumlah_diminta',
+        ]);
+
+        // Normalisasi nomor WA -> 628xxxxxxxxxx
+        $data['no_wa'] = $this->normalizeWa($data['no_wa']);
+
+        // Validasi tambahan setelah normalisasi (total 62 + 8-13 digit)
+        if (!preg_match('/^62\d{8,13}$/', $data['no_wa'])) {
+            return back()
+                ->withErrors(['no_wa' => 'Nomor WhatsApp tidak valid. Gunakan format 08xxxxxxxx atau 62xxxxxxxx.'])
+                ->withInput();
+        }
+
+        // Set status dan token
+        $data['status'] = 'diminta'; // Status khusus untuk permintaan
+        $data['status_token'] = Str::random(32);
+        $data['is_request'] = true; // Tandai sebagai permintaan
+        $data['approved_at'] = now(); // Langsung approve
+        // Tidak perlu user_id karena tidak menggunakan auth
+
+        // Proses upload & konversi gambar ke WebP (ringan)
+        if ($request->hasFile('gambar')) {
+            $imgFile = $request->file('gambar');
+            $filename = Str::random(16) . '.webp';
+
+            // Baca dan skala proporsional (lebar maks 300px agar hemat)
+            $image = Image::read($imgFile)->scaleDown(width: 300);
+
+            // Encode ke WebP (kualitas 50 = kecil tapi masih layak)
+            $encoded = $image->encodeByExtension('webp', quality: 50);
+
+            // Pastikan folder 'public/barang/webp' ada
+            if (!Storage::exists('public/barang/webp')) {
+                Storage::makeDirectory('public/barang/webp');
+            }
+
+            // Simpan file WebP
+            Storage::disk('public')->put('barang/webp/' . $filename, $encoded);
+
+            // Simpan path relatif untuk database
+            $data['gambar'] = 'barang/webp/' . $filename;
+        }
+
+        // Buat record baru
+        $barang = Barang::create($data);
+
+        return redirect()->route('barang.requests.list')
+            ->with('success', 'Permintaan barang berhasil ditambahkan!')
+            ->with('status_token', $barang->status_token)
+            ->with('no_wa', $barang->no_wa);
+    }
+
+    /**
+     * Menampilkan daftar permintaan barang
+     */
+public function listRequests(Request $request)
+{
+    $query = Barang::where('is_request', true);
+
+    // filter kategori
+    if ($request->filled('kategori')) {
+        $query->where('kategori_id', $request->kategori);
+    }
+
+    // filter lokasi
+    if ($request->filled('lokasi')) {
+        $query->whereHas('lokasi', function ($q) use ($request) {
+            $q->where('slug', $request->lokasi);
+        });
+    }
+
+    $requests = $query->orderBy('created_at', 'desc')->paginate(12);
+
+    // ambil semua kategori & lokasi
+    $kategoriList = Kategori::all();
+    $lokasiList   = Lokasi::all();
+
+    return view('barang.request.index', compact('requests', 'kategoriList', 'lokasiList'));
 }
 
+
+    /**
+     * Halaman konfirmasi permintaan barang sudah didapatkan
+     */
+    public function confirmRequest($token)
+    {
+        $barang = Barang::where('status_token', $token)
+                   ->where('is_request', true)
+                   ->firstOrFail();
+        
+        return view('barang.request.confirm', compact('barang'));
+    }
+
+    /**
+     * Eksekusi konfirmasi permintaan barang sudah didapatkan
+     */
+    public function claimRequest(Request $request, $token)
+    {
+        $barang = Barang::where('status_token', $token)
+                   ->where('is_request', true)
+                   ->firstOrFail();
+        
+        $barang->status = 'sudah didapatkan';
+        $barang->save();
+
+        return redirect()
+            ->route('barang.requests.list')
+            ->with('success', 'Status permintaan barang berhasil diubah menjadi "sudah didapatkan"!');
+    }
+}

@@ -3,6 +3,24 @@
 @section('meta_title', 'Berbagi Barang Gratis | BarangGratis.com')
 @section('meta_description', 'Tambahkan barang gratis yang tidak terpakai dan bantu orang lain yang membutuhkan. Mudah, cepat, dan tanpa biaya di BarangGratis.com. Isi data barang, upload gambar, dan bagikan lokasi pengambilan.')
 
+@section('extra-scripts')
+<!-- Google tag (gtag.js) event - delayed navigation helper -->
+<script>
+  function gtagSendEvent(url) {
+    var callback = function () {
+      if (typeof url === 'string') {
+        window.location = url;
+      }
+    };
+    gtag('event', 'form_submit', {
+      'event_callback': callback,
+      'event_timeout': 2000,
+    });
+    return false;
+  }
+</script>
+@endsection
+
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
@@ -86,8 +104,9 @@ document.getElementById('gambar').addEventListener('change', function(e) {
                         </div>
 
                         <div class="mb-3">
-                            <label for="alamat_pengambilan" class="form-label">Alamat Pengambilan</label>
+                            <label for="alamat_pengambilan" class="form-label">Ambil di</label>
                             <input type="text" name="alamat_pengambilan" class="form-control"
+				   placeholder="Contoh: Ambil dekat Post Kamling."
                                    value="{{ old('alamat_pengambilan') }}">
                         </div>
 

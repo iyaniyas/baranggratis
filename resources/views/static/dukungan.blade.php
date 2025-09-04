@@ -14,6 +14,7 @@
                         BarangGratis.com adalah gerakan berbagi barang tak terpakai secara gratis.<br>
                         Dukung kami agar platform ini tetap online, gratis, dan berkembang!
                     </p>
+
                     <div class="mb-4">
                         <h5 class="text-light">Mengapa Donasi Diperlukan?</h5>
                         <ul>
@@ -22,6 +23,7 @@
                             <li>Memperluas edukasi dan promosi komunitas</li>
                         </ul>
                     </div>
+
                     <div class="mb-4">
                         <h5 class="text-light">Total Kebutuhan Dana: <span class="text-warning">Rp13.500.000 / tahun</span></h5>
                         <p>
@@ -29,12 +31,38 @@
                             Setiap donasi, sekecil apapun, sangat berarti!
                         </p>
                     </div>
+
+                    <!-- Donasi Sociabuzz -->
                     <div class="text-center my-4">
                         <a href="https://sociabuzz.com/baranggratis/tribe" target="_blank" class="btn btn-success btn-lg shadow rounded-pill px-5">
                             Donasi via Sociabuzz
                         </a>
                     </div>
+
                     <hr class="bg-secondary">
+
+                    <!-- Donasi Bitcoin -->
+                    <div class="text-center my-4">
+                        <h5 class="text-warning">Donasi via Bitcoin</h5>
+                        <p class="small text-light mb-2">Scan QR atau klik untuk copy alamat wallet:</p>
+                        
+                        <!-- QR Code dari API -->
+                        <div class="mb-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?data=bc1qkscjeapan62t5h9gza8ftder5azzdecqvjh2qj&size=200x200" 
+                                 alt="Bitcoin QR Code" class="img-fluid border rounded p-2 bg-white">
+                        </div>
+
+                        <!-- Alamat Bitcoin -->
+                        <div class="input-group mb-3" style="max-width: 100%;">
+                            <input id="btcAddress" type="text" class="form-control bg-dark text-light border-secondary" 
+                                   value="bc1qkscjeapan62t5h9gza8ftder5azzdecqvjh2qj" readonly>
+                            <button class="btn btn-warning fw-bold" onclick="copyBTC()">Copy</button>
+                        </div>
+                        <small class="text-secondary">Alamat Bitcoin: <code>bc1qkscjeapan62t5h9gza8ftder5azzdecqvjh2qj</code></small>
+                    </div>
+
+                    <hr class="bg-secondary">
+
                     <div class="text-center text-light small mt-4">
                         Ingin bertanya atau ingin jadi relawan? Hubungi kami:<br>
                         <span style="user-select:none;">kontak@baranggratis.com</span>
@@ -44,5 +72,15 @@
         </div>
     </div>
 </div>
+
+<script>
+function copyBTC() {
+    var copyText = document.getElementById("btcAddress");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // untuk mobile
+    document.execCommand("copy");
+    alert("Alamat Bitcoin disalin: " + copyText.value);
+}
+</script>
 @endsection
 

@@ -50,6 +50,23 @@
       <style>
     .email { cursor: text; user-select: none; }
   </style>
+<!-- Event snippet for Website lead conversion page -->
+<script>
+  gtag('event', 'conversion', {'send_to': 'AW-930136716/9kKaCP6EgeMYEIyFw7sD'});
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-930136716">
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-930136716');
+</script>
+
+@yield('extra-scripts')
 </head>
 <body>
     @include('layouts.navigation')
