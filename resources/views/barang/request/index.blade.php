@@ -1,81 +1,126 @@
 @extends('layouts.app')
 
-@section('title', 'Semua Permintaan Barang - BarangGratis.com')
+@section('meta_title', 'Daftar Permintaan Barang - BarangGratis.com')
+@section('meta_description', 'Lihat daftar permintaan barang dari komunitas BarangGratis.com')
 
 @section('content')
-<div class="container py-4">
-    <h1 class="mb-4 text-light">Semua Permintaan Barang</h1>
+<div class="container py-4 bg-dark text-light min-vh-100">
+    {{-- Header --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0 text-light">Daftar Permintaan Barang</h2>
+        <a href="{{ route('barang.requests.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Minta Barang
+        </a>
+    </div>
+    <p class="text-muted">Temukan barang yang dibutuhkan oleh komunitas</p>
 
-    {{-- Filter & Search --}}
-    <form method="GET" action="{{ url('/permintaan') }}" class="row g-2 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                   placeholder="Cari permintaan barang...">
+    {{-- Alert sukses --}}
+    @if(session('success'))
+        <div class="alert alert-success text-dark">
+            {{ session('success') }}
         </div>
-        <div class="col-md-3">
-            <select name="kategori" class="form-select">
-                <option value="">Semua Kategori</option>
-                @foreach($kategoriList as $kategori)
-                    <option value="{{ $kategori->id }}" {{ request('kategori') == $kategori->id ? 'selected' : '' }}>
-                        {{ $kategori->nama }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="lokasi" class="form-select">
-                <option value="">Semua Lokasi</option>
-                @foreach($lokasiList as $lokasi)
-                    <option value="{{ $lokasi->slug }}" {{ request('lokasi') == $lokasi->slug ? 'selected' : '' }}>
-                        {{ $lokasi->nama }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-2 d-grid">
-            <button type="submit" class="btn btn-warning">Filter</button>
-        </div>
-    </form>
+    @endif
 
-    {{-- Grid daftar permintaan --}}
-    <div class="row g-3">
-        @forelse($requests as $item)
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm bg-dark text-light">
-                    <a href="{{ route('barang.show', $item->slug) }}">
-                        <img src="{{ $item->gambar ? asset('storage/'.$item->gambar) : 'https://via.placeholder.com/300x200?text=No+Image' }}"
-                             class="card-img-top rounded-top" alt="{{ $item->judul }}"
-                             style="height: 160px; object-fit: cover;">
-                    </a>
-                    <div class="card-body p-2">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge {{ $item->status === 'sudah didapatkan' ? 'bg-success' : 'bg-warning text-dark' }}">
-                                {{ $item->status === 'sudah didapatkan' ? 'Sudah Didapatkan' : 'Permintaan' }}
+    {{-- Link konfirmasi WA --}}
+    @if(session('status_token'))
+        @php
+            $barangBaru = \App\Models\Barang::where('status_token', session('status_token'))
+                                            ->where('is_request', true)
+                                            ->latest()
+                                            ->first();
+        @endphp
+        <div class="alert alert-info text-dark">
+            <label><strong>
+                Klik tombol Simpan di WhatsApp Anda untuk menyimpan link.<br>
+                Buka link ini apabila
+                <span class="text-primary fw-bold">
+                    {{ $barangBaru ? strtolower($barangBaru->judul) : 'barang' }}
+                </span>
+                sudah didapatkan.
+            </strong></label>
+
+            <input
+                type="text"
+                class="form-control mb-2"
+                value="{{ route('barang.requests.confirm', session('status_token')) }}"
+                readonly
+                onclick="this.select()"
+            />
+
+            <a
+                href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode(
+                    'Klik link konfirmasi permintaan: ' 
+                    . ($barangBaru ? $barangBaru->judul : 'barang') 
+                    . ' sudah didapatkan: ' 
+                    . route('barang.requests.confirm', session('status_token'))
+                ) }}"
+                target="_blank"
+                class="btn btn-light text-dark btn-sm"
+            >
+                <i class="fab fa-whatsapp me-1"></i> Simpan di WhatsApp Anda
+            </a>
+        </div>
+    @endif
+
+    {{-- Grid permintaan barang --}}
+    @if($requests->count())
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
+            @foreach($requests as $request)
+                <div class="col">
+                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
+
+                        {{-- Gambar dengan link ke detail --}}
+                        <a href="{{ route('barang.show', $request->slug) }}">
+                            @if($request->gambar)
+                                <img src="{{ asset('storage/' . $request->gambar) }}"
+                                     alt="Foto {{ $request->judul }}"
+                                     class="mx-auto"
+                                     style="object-fit: cover; width: 200px; height: 150px;">
+                            @else
+                                <img src="{{ asset('no-image.jpg') }}"
+                                     alt="Tidak Ada Foto"
+                                     class="mx-auto"
+                                     style="object-fit: cover; width: 200px; height: 150px;">
+                            @endif
+                        </a>
+
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            {{-- Status --}}
+                            <span class="badge bg-{{ $request->status === 'sudah didapatkan' ? 'success' : 'primary' }} mb-2">
+                                {{ $request->status === 'sudah didapatkan' ? 'Sudah Didapatkan' : 'Permintaan' }}
                             </span>
-                            <small class="text-muted">{{ $item->created_at->diffForHumans() }}</small>
+
+                            {{-- Judul dengan link --}}
+                            <h6 class="card-title mb-2">
+                                <a href="{{ route('barang.show', $request->slug) }}" class="text-decoration-none text-light">
+                                    {{ $request->judul }}
+                                </a>
+                            </h6>
+
+                            {{-- Lokasi --}}
+                            <p class="small text-muted mb-2">{{ $request->lokasi->nama }}</p>
                         </div>
-                        <h6 class="card-title mb-1">
-                            <a href="{{ route('barang.show', $item->slug) }}" class="text-light text-decoration-none">
-                                {{ Str::limit($item->judul, 40) }}
-                            </a>
-                        </h6>
-                        <small class="text-muted">
-                            {{ $item->lokasi->nama ?? 'Lokasi tidak tersedia' }}
-                        </small>
+
+                        <div class="card-footer bg-transparent border-0 text-muted small">
+                            {{ $request->created_at->diffForHumans() }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <div class="col-12 text-center text-muted py-5">
-                Belum ada permintaan barang.
-            </div>
-        @endforelse
-    </div>
+            @endforeach
+        </div>
 
-    {{-- Pagination --}}
-    <div class="mt-4">
-        {{ $requests->withQueryString()->links('pagination::bootstrap-5') }}
-    </div>
+        {{-- Pagination --}}
+        <div class="mt-4">
+            {{ $requests->links('pagination::bootstrap-5') }}
+        </div>
+    @else
+        <div class="alert alert-light text-dark text-center">
+            Belum ada permintaan barang.  
+            <a href="{{ route('barang.requests.create') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus me-1"></i> Ajukan Permintaan
+            </a>
+        </div>
+    @endif
 </div>
 @endsection
 

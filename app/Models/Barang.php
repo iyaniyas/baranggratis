@@ -22,45 +22,21 @@ class Barang extends Model
         'status_token',
         'no_wa',
         'slug',
-        'is_request',
-        'jumlah_diminta',
-        'approved_at'
+        'is_request', // ✅ tambahkan agar bisa mass-assign
     ];
 
     protected $casts = [
-        'is_request' => 'boolean',
-        'approved_at' => 'datetime',
-        'jumlah_diminta' => 'integer'
+        'is_request' => 'boolean', // ✅ otomatis jadi true/false
     ];
 
-    // Relasi ke kategori
     public function kategori()
     {
         return $this->belongsTo(Kategori::class);
     }
 
-    // Relasi ke lokasi
     public function lokasi()
     {
         return $this->belongsTo(Lokasi::class);
-    }
-
-    // Scope untuk permintaan barang
-    public function scopePermintaan($query)
-    {
-        return $query->where('is_request', true);
-    }
-
-    // Scope untuk barang biasa (bukan permintaan)
-    public function scopeBarangBiasa($query)
-    {
-        return $query->where('is_request', false);
-    }
-
-    // Scope untuk permintaan yang sudah disetujui
-    public function scopeDisetujui($query)
-    {
-        return $query->whereNotNull('approved_at');
     }
 
     // LOGIKA SLUG UNIK
@@ -96,4 +72,6 @@ class Barang extends Model
         return $slug;
     }
 }
+
+
 
