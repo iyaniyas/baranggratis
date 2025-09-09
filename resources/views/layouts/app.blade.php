@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
         <!-- Critical CSS (inline) -->
     <style>
       /* container & H1 above-the-fold */
@@ -50,10 +50,6 @@
       <style>
     .email { cursor: text; user-select: none; }
   </style>
-<!-- Event snippet for Website lead conversion page -->
-<script>
-  gtag('event', 'conversion', {'send_to': 'AW-930136716/9kKaCP6EgeMYEIyFw7sD'});
-</script>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-930136716">
@@ -64,6 +60,11 @@
   gtag('js', new Date());
 
   gtag('config', 'AW-930136716');
+</script>
+
+<!-- Event snippet for Website lead conversion page -->
+<script>
+  gtag('event', 'conversion', {'send_to': 'AW-930136716/9kKaCP6EgeMYEIyFw7sD'});
 </script>
 
 @yield('extra-scripts')

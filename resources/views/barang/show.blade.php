@@ -72,25 +72,22 @@
                 </div>
             </div>
 
-            {{-- Related items --}}
-            @if(isset($related) && $related->count())
-            <div class="mb-4">
-                <h3>Barang Lain di sini:</h3>
-                <div class="row">
-                    @foreach($related as $item)
-                        <div class="col-2">
-                            <a href="{{ route('barang.show', $item->slug) }}">
-                                <img src="{{ asset('storage/' . $item->gambar) }}"
-                                     alt="{{ $item->judul }}"
-                                     class="img-fluid"
-                                     style="object-fit: cover;"
-                                     width="200" height="200" fetchpriority="high">
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
+			{{-- Related items --}}
+			@if(isset($related) && $related->count())
+			<div class="mb-4">
+				<h3>Barang Lain di sini:</h3>
+				<ul class="list-unstyled">
+					@foreach($related as $item)
+						<li class="mb-1">
+							<a href="{{ route('barang.show', $item->slug) }}">
+								{{ $item->is_request ? 'Butuh ' . $item->judul : $item->judul }}
+							</a>
+							<span class="text-muted">— {{ ucfirst($item->status) }}</span>
+						</li>
+					@endforeach
+				</ul>
+			</div>
+			@endif
 
         </div>
     </div>
