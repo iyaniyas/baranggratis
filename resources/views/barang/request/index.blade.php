@@ -62,48 +62,38 @@
         </div>
     @endif
 
-    {{-- Grid permintaan barang --}}
+    {{-- Grid permintaan barang tanpa gambar --}}
     @if($requests->count())
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach($requests as $request)
                 <div class="col">
-                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center">
-
-                        {{-- Gambar dengan link ke detail --}}
-                        <a href="{{ route('barang.show', $request->slug) }}">
-                            @if($request->gambar)
-                                <img src="{{ asset('storage/' . $request->gambar) }}"
-                                     alt="Foto {{ $request->judul }}"
-                                     class="mx-auto"
-                                     style="object-fit: cover; width: 200px; height: 150px;">
-                            @else
-                                <img src="{{ asset('no-image.jpg') }}"
-                                     alt="Tidak Ada Foto"
-                                     class="mx-auto"
-                                     style="object-fit: cover; width: 200px; height: 150px;">
-                            @endif
-                        </a>
-
-                        <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="card h-100 bg-dark text-light border-secondary shadow-sm position-relative">
+                        <div class="card-body d-flex flex-column">
                             {{-- Status --}}
                             <span class="badge bg-{{ $request->status === 'sudah didapatkan' ? 'success' : 'primary' }} mb-2">
                                 {{ $request->status === 'sudah didapatkan' ? 'Sudah Didapatkan' : 'Permintaan' }}
                             </span>
 
-                            {{-- Judul dengan link --}}
+                            {{-- Judul --}}
                             <h6 class="card-title mb-2">
-                                <a href="{{ route('barang.show', $request->slug) }}" class="text-decoration-none text-light">
-                                    {{ $request->judul }}
-                                </a>
+                                {{ $request->judul }}
                             </h6>
 
+                            {{-- Ringkasan deskripsi --}}
+                            <p class="small text-muted mb-2">
+                                {{ Str::limit(strip_tags($request->deskripsi), 100) }}
+                            </p>
+
                             {{-- Lokasi --}}
-                            <p class="small text-muted mb-2">{{ $request->lokasi->nama }}</p>
+                            <p class="small text-info mb-0">{{ $request->lokasi->nama }}</p>
                         </div>
 
                         <div class="card-footer bg-transparent border-0 text-muted small">
                             {{ $request->created_at->diffForHumans() }}
                         </div>
+
+                        {{-- Link invisible agar card klikable penuh --}}
+                        <a href="{{ route('barang.show', $request->slug) }}" class="stretched-link"></a>
                     </div>
                 </div>
             @endforeach

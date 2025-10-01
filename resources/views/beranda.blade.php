@@ -17,7 +17,7 @@
         Temukan &amp; Bagikan Barang Gratis
     </h2>
 
-    <!-- Bagian kenapa BarangGratis -->
+    <!-- Carousel kenapa BarangGratis -->
     <div id="kenapaCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-pause="hover">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#kenapaCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
@@ -48,7 +48,7 @@
         </button>
     </div>
 
-    <!-- Panduan cara kerja -->
+    <!-- Cara Kerja -->
     <div class="mb-5">
         <h4 class="h4 text-center mb-4 text-light">Cara Kerja BarangGratis.com</h4>
         <div class="row text-center g-4">
@@ -87,17 +87,15 @@
         </div>
     </div>
 
-    <!-- Form pencarian: arahkan ke /barang agar filter diproses di halaman daftar -->
+    <!-- Form pencarian -->
     <div class="mb-5 p-4 bg-dark text-light rounded">
         <h6 class="h4 text-center mb-3">Cari Barang Gratis</h6>
         <form method="GET" action="{{ url('/barang') }}" class="row g-3 justify-content-center align-items-end">
             <div class="col-md-3">
-                <label for="q" class="visually-hidden">Cari nama barang</label>
-                <input type="text" id="q" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ request('q') }}">
+                <input type="text" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ request('q') }}">
             </div>
             <div class="col-md-3">
-                <label for="lokasiSelect" class="visually-hidden">Filter lokasi</label>
-                <select id="lokasiSelect" name="lokasi" class="form-select" aria-label="Filter lokasi">
+                <select name="lokasi" class="form-select">
                     <option value="">Semua Lokasi</option>
                     @foreach($lokasiList as $lokasi)
                         <option value="{{ $lokasi->slug }}" {{ request('lokasi') == $lokasi->slug ? 'selected' : '' }}>
@@ -112,67 +110,34 @@
         </form>
     </div>
 
-    <!-- Tampilkan cuplikan 6 barang terbaru -->
+    <!-- Grid Barang -->
     @if($barangs->count())
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
-            @foreach($barangs->take(6) as $barang)
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach($barangs as $barang)
                 <div class="col">
-                    <div class="card h-100 bg-dark text-light border-0 shadow-sm text-center position-relative">
-                        {{-- Gambar --}}
-                        @if($barang->gambar)
-                            <a href="{{ route('barang.show', $barang->slug) }}">
-                                <img src="{{ asset('storage/' . $barang->gambar) }}"
-                                     fetchpriority="high"
-                                     alt="Foto {{ $barang->judul }}"
-                                     class="mx-auto"
-                                     style="object-fit: cover; width: 200px; height: 150px;">
-                            </a>
-                        @else
-                            <a href="{{ route('barang.show', $barang->slug) }}">
-                                <img src="{{ asset('no-image.jpg') }}"
-                                     fetchpriority="high"
-                                     alt="Tidak Ada Foto"
-                                     class="mx-auto"
-                                     style="object-fit: cover; width: 200px; height: 150px;">
-                            </a>
-                        @endif
-
-                        {{-- Badge Permintaan --}}
-                        @if($barang->is_request)
-                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
-                                Permintaan
+                    <a href="{{ route('barang.show', $barang->slug) }}" class="text-decoration-none">
+                        <div class="card h-100 bg-dark text-light border-0 shadow-sm p-3">
+                            {{-- Status --}}
+                            <span class="badge 
+                                @if($barang->status === 'tersedia') bg-success
+                                @elseif($barang->status === 'sudah diambil') bg-secondary
+                                @elseif($barang->status === 'sudah didapatkan') bg-warning text-dark
+                                @else bg-light text-dark
+                                @endif
+                                mb-2">
+                                {{ ucfirst($barang->status) }}
                             </span>
-                        @endif
 
-                        {{-- Badge Status --}}
-                        <span class="badge 
-                            @if($barang->status === 'tersedia') bg-success
-                            @elseif($barang->status === 'sudah diambil') bg-secondary
-                            @elseif($barang->status === 'sudah didapatkan') bg-warning text-dark
-                            @else bg-light text-dark
-                            @endif
-                            position-absolute top-0 end-0 m-2">
-                            {{ ucfirst($barang->status) }}
-                        </span>
-
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <h7 class="card-title h5 mb-2">
-                                <a href="{{ route('barang.show', $barang->slug) }}"
-                                   class="link-light text-decoration-none">
-                                    {{ $barang->judul }}
-                                </a>
-                            </h7>
-                            <p class="text-light small mb-0">
-                                Lokasi: {{ $barang->lokasi->nama }}
-                            </p>
+                            <h5 class="card-title text-light">{{ $barang->judul }}</h5>
+                            <p class="mb-0 small">Lokasi: {{ $barang->lokasi->nama }}</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             @endforeach
         </div>
 
         <div class="text-center mt-4 p-4 bg-dark rounded">
-            <a href="/barang" class="btn btn-lg btn-light text-dark fw-bold">Lihat Semua Barang Gratis</a>
+            <a href="/barang" class="btn btn-lg btn-light text-dark fw-bold">Lihat Semua Barang & Permintaan</a>
         </div>
     @else
         <div class="alert alert-info">Tidak ada barang ditemukan.</div>

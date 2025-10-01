@@ -5,6 +5,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BarangAdminController;
+use App\Http\Controllers\LandingController;
 
 //admin
 //admin
@@ -122,3 +123,6 @@ Route::get('/permintaan/tambah', [BarangController::class, 'createRequest'])->na
 Route::post('/permintaan/tambah', [BarangController::class, 'storeRequest'])->name('barang.requests.store');
 Route::get('/permintaan/konfirmasi/{token}', [BarangController::class, 'confirmRequest'])->name('barang.requests.confirm');
 Route::post('/permintaan/klaim/{token}', [BarangController::class, 'claimRequest'])->name('barang.requests.claim');
+
+//routes landing
+Route::get('/landing', [LandingController::class, 'index'])->name('landing');

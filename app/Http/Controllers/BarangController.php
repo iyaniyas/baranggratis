@@ -40,7 +40,7 @@ class BarangController extends Controller
     // Tampilkan semua barang
     public function index()
     {
-        $barangs = Barang::with(['kategori', 'lokasi'])->latest()->paginate(10);
+        $barangs = Barang::with(['kategori', 'lokasi'])->latest()->paginate(12);
         return view('barang.index', compact('barangs'));
     }
 

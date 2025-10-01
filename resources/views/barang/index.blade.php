@@ -5,6 +5,47 @@
 @section('content')
 <div class="container my-4">
 
+    {{-- Link update-status sekali saja --}}
+    {{-- resources/views/barang/index.blade.php –– bagian Link konfirmasi --}}
+    @if(session('status_token'))
+        @php
+            $barangBaru = \App\Models\Barang::where('status_token', session('status_token'))
+                                            ->latest()
+                                            ->first();
+        @endphp
+        <div class="alert alert-info text-dark mb-4">
+            <label><strong>
+                Klik tombol Simpan di WhatsApp Anda untuk menyimpan link.<br>
+                Buka link ini apabila
+                <span class="text-primary fw-bold">
+                    {{ $barangBaru ? strtolower($barangBaru->judul) : 'barang' }}
+                </span>
+                sudah diambil orang.
+            </strong></label>
+
+            <input
+                type="text"
+                class="form-control mb-2"
+                value="{{ route('barang.confirm', session('status_token')) }}"
+                readonly
+                onclick="this.select()"
+            />
+
+            <a
+                href="https://wa.me/{{ session('no_wa') }}?text={{ urlencode(
+                    'Klik link konfirmasi pengambilan: ' 
+                    . ($barangBaru ? $barangBaru->judul : 'barang') 
+                    . ' sudah diambil: ' 
+                    . route('barang.confirm', session('status_token'))
+                ) }}"
+                target="_blank"
+                class="btn btn-success btn-sm"
+            >
+                Simpan di WhatsApp Anda
+            </a>
+        </div>
+    @endif
+
     <h1 class="text-center text-light mb-4">Daftar Barang</h1>
 
     <!-- Tampilkan daftar barang -->

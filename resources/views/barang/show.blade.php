@@ -31,15 +31,34 @@
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg border-0 overflow-hidden mb-4">
                 <div class="row g-0">
-                    @if($gambarUrl)
+                    @if(!$barang->is_request)
+                        {{-- Barang biasa --}}
                         <div class="col-md-5">
-                            <img src="{{ $gambarUrl }}"
+                            <img src="{{ $barang->gambar ? asset('storage/' . $barang->gambar) : asset('no-image.jpg') }}"
                                  alt="{{ $barang->judul }}"
                                  class="img-fluid h-100 w-100"
                                  style="object-fit: cover;"
                                  width="200" height="200" fetchpriority="high">
                         </div>
+                    @elseif($barang->is_request && $barang->gambar)
+                        {{-- Permintaan barang + ada gambar --}}
+                        <div class="col-md-5">
+                            <img src="{{ asset('storage/' . $barang->gambar) }}"
+                                 alt="Butuh {{ $barang->judul }}"
+                                 class="img-fluid h-100 w-100"
+                                 style="object-fit: cover;"
+                                 width="200" height="200" fetchpriority="high">
+                        </div>
+                    @elseif($barang->is_request && !$barang->gambar)
+                        {{-- Permintaan barang tanpa gambar = tampilkan ringkasan tulisan --}}
+                        <div class="col-md-5 d-flex align-items-center justify-content-center bg-light text-center p-3">
+                            <p class="mb-0">
+                                <strong>Butuh {{ $barang->judul }}</strong><br>
+                                {{ Str::limit(strip_tags($barang->deskripsi), 120) }}
+                            </p>
+                        </div>
                     @endif
+
                     <div class="col-md-7">
                         <div class="card-body">
                             <h2 class="card-title mb-3">
@@ -72,22 +91,22 @@
                 </div>
             </div>
 
-			{{-- Related items --}}
-			@if(isset($related) && $related->count())
-			<div class="mb-4">
-				<h3>Barang Lain di sini:</h3>
-				<ul class="list-unstyled">
-					@foreach($related as $item)
-						<li class="mb-1">
-							<a href="{{ route('barang.show', $item->slug) }}">
-								{{ $item->is_request ? 'Butuh ' . $item->judul : $item->judul }}
-							</a>
-							<span class="text-muted">— {{ ucfirst($item->status) }}</span>
-						</li>
-					@endforeach
-				</ul>
-			</div>
-			@endif
+            {{-- Related items --}}
+            @if(isset($related) && $related->count())
+            <div class="mb-4">
+                <h3>Barang Lain di sini:</h3>
+                <ul class="list-unstyled">
+                    @foreach($related as $item)
+                        <li class="mb-1">
+                            <a href="{{ route('barang.show', $item->slug) }}">
+                                {{ $item->is_request ? 'Butuh ' . $item->judul : $item->judul }}
+                            </a>
+                            <span class="text-muted">— {{ ucfirst($item->status) }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
         </div>
     </div>
@@ -102,7 +121,7 @@
         '@type'    => 'Product',
         'name'     => $barang->is_request ? 'Butuh ' . $barang->judul : $barang->judul,
         'description' => strip_tags($barang->deskripsi),
-        'image'    => $gambarUrl,
+        'image'    => $barang->gambar ? asset('storage/' . $barang->gambar) : asset('no-image.jpg'),
         'sku'      => $barang->slug,
         'brand'    => [
             '@type' => 'Brand',
